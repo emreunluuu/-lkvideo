@@ -62,7 +62,19 @@ def chunk_words(words, max_words=3, max_chars=20):
             chunks[-1].extend(cur)
         else:
             chunks.append(cur)
-    return chunks
+    # Okunabilirlik: tek kelimelik cümle sonlarını öncekine kat; parçayı bağlaç/işlev sözcüğüyle bitirme
+    end = lambda c: re.search(r"[,.;:!?…]$", c[-1]["w"])
+    out = []
+    for c in chunks:
+        if out and len(c) == 1 and end(c) and not end(out[-1]) and len(out[-1]) < 4:
+            out[-1] = out[-1] + c
+        else:
+            out.append(c)
+    FUNC = {"bir", "ve", "ile", "ama", "de", "da", "için", "bu", "şu", "en", "çok", "hem", "ki", "ya"}
+    for i in range(len(out) - 1):
+        if len(out[i]) > 1 and not end(out[i]) and norm(out[i][-1]["w"]) in FUNC:
+            out[i + 1] = [out[i].pop()] + out[i + 1]
+    return out
 
 
 def srt_time(t):
