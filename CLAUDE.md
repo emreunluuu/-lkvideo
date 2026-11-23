@@ -9,8 +9,9 @@ Bu dosyadaki kurallar her oturumda geçerlidir.
 | Tür | Format | Süre | Sıklık |
 |---|---|---|---|
 | Kısa (Shorts / Reels / TikTok) | Dikey 1080x1920, 30 fps | ~60 sn (55–65 sn) | Günde 1 |
-| Uzun (YouTube) | Yatay 1920x1080, 30 fps | 8–10 dk | Haftada 3 (bkz. Açık sorular) |
+| Uzun (YouTube) | Yatay 1920x1080, 30 fps | 8–10 dk | Haftada 3 |
 
+- Haftalık toplam: 7 short + 3 uzun video (8–10 dk).
 - Uzun videolar en az 8 dk olmalı (video ortası reklam için).
 - Uzun videodan ayrıca 3–4 kısa video kesilebilir; ama her kısa video kendi
   başına anlamlı bir hikâye ve kendi giriş kancası olmalı.
@@ -88,7 +89,3 @@ videoya az farklılık gösteren içerikleri para kazanmaya kapatır. Bu yüzden
 
 - Gizli anahtarlar sadece ortam değişkenlerinde veya GitHub Secrets'ta tutulur.
 - Üretilen video dosyaları (`output/`) depoya commit edilmez.
-
-## Açık sorular
-
-- "Haftada 3" uzun video mu, yoksa ek kısa video mu? Kullanıcıdan teyit edilecek.
