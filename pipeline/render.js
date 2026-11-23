@@ -65,7 +65,8 @@ const launchOpts = process.env.RENDER_GPU === '1'
 
 async function grab(page, t, frame) {
   await page.evaluate(([tt, f]) => window.renderFrame(tt, f), [t, frame]);
-  return page.screenshot({ type: 'jpeg', quality: 94, clip: { x: 0, y: 0, width: W, height: H } });
+  // timeout: 0 — 4K'da geçiş kareleri (iki sahne) CPU'da 30 sn'yi aşabilir
+  return page.screenshot({ type: 'jpeg', quality: 94, clip: { x: 0, y: 0, width: W, height: H }, timeout: 0 });
 }
 
 async function renderStills(port) {
@@ -91,20 +92,29 @@ function encoder(outFile) {
   return { ff, done };
 }
 
-async function renderChunk(port, idx, a, b, tmpDir, progress) {
-  const browser = await chromium.launch(launchOpts);
-  const page = await openPage(browser, port);
-  const out = path.join(tmpDir, `chunk_${String(idx).padStart(2, '0')}.mp4`);
-  const { ff, done } = encoder(out);
-  for (let f = a; f < b; f++) {
-    const buf = await grab(page, f / FPS, f);
-    if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once('drain', r));
-    progress(1);
+const SEG = 30; // kare: devam ettirilebilir render için segment boyu
+
+/** Bir worker: kuyruktan segment alır; tamamlanmış segmentleri atlar (çökme/yeniden başlatma sonrası devam). */
+async function worker(port, queue, cacheDir, progress) {
+  let browser = null, page = null;
+  while (queue.length) {
+    const sIdx = queue.shift();
+    const file = path.join(cacheDir, `seg_${String(sIdx).padStart(4, '0')}.mp4`);
+    const a = sIdx * SEG, b = Math.min(totalFrames, a + SEG);
+    if (fs.existsSync(file)) { progress(b - a, true); continue; }
+    if (!page) { browser = await chromium.launch(launchOpts); page = await openPage(browser, port); }
+    const part = file + '.part.mp4';
+    const { ff, done } = encoder(part);
+    for (let f = a; f < b; f++) {
+      const buf = await grab(page, f / FPS, f);
+      if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once('drain', r));
+      progress(1);
+    }
+    ff.stdin.end();
+    await done;
+    fs.renameSync(part, file);
   }
-  ff.stdin.end();
-  await done;
-  await browser.close();
-  return out;
+  if (browser) await browser.close();
 }
 
 (async () => {
@@ -114,28 +124,32 @@ async function renderChunk(port, idx, a, b, tmpDir, progress) {
     if (args.stills) { await renderStills(port); return; }
     const outFile = path.resolve(args.out || path.join(path.dirname(manifestPath), 'video_noaudio.mp4'));
     const workers = Math.max(1, parseInt(args.workers || Math.max(1, Math.min(4, os.cpus().length - 1)), 10));
-    const tmpDir = fs.mkdtempSync(path.join(path.dirname(outFile), '.chunks-'));
-    let doneFrames = 0; const t0 = Date.now();
-    const progress = (n) => {
-      doneFrames += n;
+    // Önbellek klasörü manifest içeriğine bağlı: manifest değişirse eski kareler kullanılmaz
+    const hashObj = require('crypto').createHash('sha1').update(fs.readFileSync(manifestPath)).update(fs.readFileSync(path.join(__dirname, 'render.js')));
+    // Sahne kodu değişince de önbellek geçersiz olsun
+    const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
+    for (const f of walk(path.join(ROOT, 'renderer')).sort()) if (/\.(js|html|css)$/.test(f)) hashObj.update(fs.readFileSync(f));
+    const hash = hashObj.digest('hex').slice(0, 10);
+    const cacheDir = path.join(path.dirname(outFile), `.render-${hash}`);
+    fs.mkdirSync(cacheDir, { recursive: true });
+    let doneFrames = 0, renderedFrames = 0; const t0 = Date.now();
+    const progress = (n, cached = false) => {
+      doneFrames += n; if (!cached) renderedFrames += n;
       if (doneFrames % 30 === 0 || doneFrames === totalFrames) {
-        const el = (Date.now() - t0) / 1000, eta = (el / doneFrames) * (totalFrames - doneFrames);
-        process.stdout.write(`\rkare ${doneFrames}/${totalFrames}  ${(doneFrames / el).toFixed(2)} kare/sn  kalan ~${Math.round(eta)} sn   `);
+        const el = (Date.now() - t0) / 1000, rate = renderedFrames / Math.max(el, 1e-3);
+        const eta = rate > 0 ? (totalFrames - doneFrames) / rate : 0;
+        process.stdout.write(`\rkare ${doneFrames}/${totalFrames}  ${rate.toFixed(2)} kare/sn  kalan ~${Math.round(eta)} sn   `);
       }
     };
-    const per = Math.ceil(totalFrames / workers);
-    const jobs = [];
-    for (let i = 0; i < workers; i++) {
-      const a = i * per, b = Math.min(totalFrames, (i + 1) * per);
-      if (a < b) jobs.push(renderChunk(port, i, a, b, tmpDir, progress));
-    }
-    const chunks = await Promise.all(jobs);
+    const nSeg = Math.ceil(totalFrames / SEG);
+    const queue = [...Array(nSeg).keys()];
+    await Promise.all([...Array(workers)].map(() => worker(port, queue, cacheDir, progress)));
     process.stdout.write('\n');
-    const list = path.join(tmpDir, 'list.txt');
-    fs.writeFileSync(list, chunks.map((c) => `file '${c}'`).join('\n'));
+    const list = path.join(cacheDir, 'list.txt');
+    fs.writeFileSync(list, [...Array(nSeg).keys()].map((i) => `file '${path.join(cacheDir, `seg_${String(i).padStart(4, '0')}.mp4`)}'`).join('\n'));
     await new Promise((res, rej) => spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', outFile], { stdio: 'inherit' })
       .on('close', (c) => (c === 0 ? res() : rej(new Error('concat başarısız')))));
-    fs.rmSync(tmpDir, { recursive: true, force: true });
+    fs.rmSync(cacheDir, { recursive: true, force: true });
     console.log('video:', outFile);
   } finally {
     srv.close();
