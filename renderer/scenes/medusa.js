@@ -95,7 +95,7 @@ export function medusa(ctx, p) {
   scene.background = fogCol;
   scene.fog = new THREE.FogExp2(fogCol, 0.07);
 
-  const stone = new THREE.MeshStandardMaterial({ color: '#9aa096', roughness: 0.62, metalness: 0.0 });
+  const stone = new THREE.MeshStandardMaterial({ color: '#7f8580', roughness: 0.55, metalness: 0.0 });
   const colStone = new THREE.MeshStandardMaterial({ color: '#4a423c', roughness: 0.8 });
 
   // Baş aşağı Medusa
@@ -123,7 +123,7 @@ export function medusa(ctx, p) {
   scene.add(new THREE.HemisphereLight('#5a6a78', '#1a0c06', 1.6));
   const warm = new THREE.SpotLight('#ffd6b0', 12, 30, 0.5, 0.7, 1.4); warm.position.set(1.5, 0.6, 5); warm.target = h1; scene.add(warm);
   const warm2 = new THREE.SpotLight('#ffd6b0', 11, 30, 0.5, 0.7, 1.4); warm2.position.set(9, 0.6, -1.5); warm2.target = h2; scene.add(warm2);
-  const rim = new THREE.DirectionalLight('#6fb4d6', 1.4); rim.position.set(-4, 6, -8); scene.add(rim);
+  const rim = new THREE.DirectionalLight('#7fc4e6', 2.4); rim.position.set(-4, 6, -8); scene.add(rim);
   const rim2 = new THREE.PointLight('#5fa8c8', 8, 14, 1.6); rim2.position.set(4, 4, -9); scene.add(rim2);
   scene.add(makeDust({ count: 300, box: [16, 7, 16], center: [3, 3, -3], color: '#ffcc99', size: 0.05, opacity: 0.6, seed: 9 }));
 

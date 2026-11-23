@@ -25,8 +25,8 @@ export function hagia(ctx, p) {
   const sea = makeWater({ size: 4000, deep: '#0a1626', shallow: '#253a55', skyHor: sky.horizon || '#e08a5c', skyTop: sky.top || '#101c3a', sunColor: sky.sun || '#ffcf96', sunDir, fogColor: fogCol.getStyle(), fogDensity: 0.0009, waveScale: 0.2 });
   sea.position.y = -0.6; scene.add(sea);
 
-  const avoid = (x, z) => Math.hypot(x, z) < 85 || Math.hypot(x + 10, z + 260) < 95;
-  scene.add(buildings({ count: 420, rMin: 95, rMax: 600, seed: 12, avoid }));
+  const avoid = (x, z) => Math.hypot(x, z) < 240 || Math.hypot(x + 10, z + 260) < 95;
+  scene.add(buildings({ count: 420, rMin: 240, rMax: 650, seed: 12, avoid }));
   scene.add(trees({ count: 90, rMin: 50, rMax: 88, seed: 4 }));
   // Karşıda büyük bir cami silueti (Sultanahmet yönü — stilize, 6 minare)
   const m6 = mosque({ domeR: 12, minarets: 6, semi: 2, seed: 8, mats: materials({ wall: '#b9a593', lead: '#5d6a74', window: '#ffc27a' }), minaretH: 64 });

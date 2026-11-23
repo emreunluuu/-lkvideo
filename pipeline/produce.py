@@ -173,11 +173,15 @@ class Producer:
             # Etiket, aynı segmentte sonradan başlayan başlığın üstüne binmesin
             for lab in seg_labels:
                 for ti in titles:
-                    if lab["start"] < ti["start"] < lab["end"]:
-                        lab["end"] = round(ti["start"] - 0.15, 3)
+                    if lab["start"] < ti["start"] + 0.5 and lab["end"] > ti["start"] - 0.5:
+                        # Etiket en az 1.4 sn kalsın; başlık etiketin bitişine kaydırılır
+                        lab["end"] = round(max(lab["start"] + 1.4, ti["start"] - 0.5), 3)
+                        if lab["end"] > ti["start"] - 0.4:
+                            ti["start"] = round(lab["end"] + 0.4, 3)
+                            ti["end"] = round(min(end, max(ti["end"], ti["start"] + 2.0)), 3)
             # Aynı yuvadaki etiketler üst üste binmesin
             for a, b in zip(seg_labels, seg_labels[1:]):
-                if a["style"] == b["style"] == "chip" and a["slot"] == b["slot"]:
+                if (a["style"] == b["style"] == "chip" and a["slot"] == b["slot"]) or a["style"] == b["style"] == "pin":
                     a["end"] = round(min(a["end"], b["start"] - 0.35), 3)
             labels += seg_labels
             for ch in chunk_words(words):
@@ -285,7 +289,7 @@ class Producer:
     # ------------------------------------------------------------------ 5. Görüntü
     def render(self):
         cmd = ["node", str(ROOT / "pipeline" / "render.js"), "--manifest", str(self.out / "manifest.json"),
-               "--out", str(self.out / "goruntu.mp4"), "--workers", str(self.args.workers)]
+               "--out", str(self.out / "goruntu.mp4"), "--workers", str(self.args.workers), "--crf", "19", "--preset", "slow"]
         if self.args.stills_only:
             cmd = cmd[:4] + ["--stills", ",".join(f"{(s + e) / 2:.2f}" for s, e in self.seg_windows), "--stills-dir", str(self.out / "onizleme")]
         subprocess.run(cmd, check=True)
