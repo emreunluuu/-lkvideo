@@ -85,7 +85,16 @@ videoya az farklılık gösteren içerikleri para kazanmaya kapatır. Bu yüzden
 - Konular `topics.txt` dosyasından sırayla alınır.
 - İlk video: **İstanbul'un gizemi ve güzellikleri**.
 
-## 9. Teknik notlar
+## 9. Araştırma ajanları (`.claude/agents/`)
+
+- `gundem-arastirmaci`: Türkiye/dünya gündemi, trendler, 30 günlük takvim.
+- `kanal-buyume-stratejisti`: algoritma, para kazanma şartları, SEO, paylaşım saatleri.
+- `ai-video-tarayici`: dünyada ve Türkiye'de AI video kanalları, formatlar, boşluklar.
+- `bilgi-dogrulayici`: her senaryo seslendirmeden önce bununla doğrulanır (zorunlu).
+- `/arastirma [odak]` komutu ilk üçünü paralel çalıştırıp haftalık özet çıkarır.
+- Raporlar `research/` klasörüne yazılır ve depoya commit edilir.
+
+## 10. Teknik notlar
 
 - Gizli anahtarlar sadece ortam değişkenlerinde veya GitHub Secrets'ta tutulur.
 - Üretilen video dosyaları (`output/`) depoya commit edilmez.
