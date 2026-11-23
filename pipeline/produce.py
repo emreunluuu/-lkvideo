@@ -164,7 +164,7 @@ class Producer:
             if i > 0 and tr in TRANSITION_SFX_LEAD:
                 if tr in ("whip", "zoom"):
                     self.sfx.append(("whoosh", start - TRANSITION_SFX_LEAD[tr], {"dir": 1 if i % 2 else -1}))
-                if tr in ("zoom", "flash", "dip"):
+                if tr in ("zoom", "flash", "dip") and self.sc.get("auto_risers", True):
                     self.sfx.append(("riser", start - 1.3, {"dur": 1.3}))
                 if tr == "flash":
                     self.sfx.append(("flash", start - 0.05, {}))

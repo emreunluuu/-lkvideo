@@ -57,7 +57,11 @@ async function openPage(browser, port) {
   return page;
 }
 
-const launchOpts = { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-sandbox'] };
+// Varsayılan: SwiftShader (CPU) — her makinede çalışır ama yavaştır (4K'da ~10-16 sn/kare).
+// Ekran kartı olan makinede RENDER_GPU=1 ile donanım WebGL kullanılır (4K'da saniyede birkaç kare).
+const launchOpts = process.env.RENDER_GPU === '1'
+  ? { headless: true, args: ['--use-angle=default', '--enable-gpu', '--ignore-gpu-blocklist', '--enable-unsafe-webgpu'] }
+  : { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-sandbox'] };
 
 async function grab(page, t, frame) {
   await page.evaluate(([tt, f]) => window.renderFrame(tt, f), [t, frame]);

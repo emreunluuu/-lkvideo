@@ -210,5 +210,6 @@
     "description": "Seslendirmesiz görsel kalite denemesi.",
     "tags": [],
     "hashtags": []
-  }
+  },
+  "auto_risers": false
 }
