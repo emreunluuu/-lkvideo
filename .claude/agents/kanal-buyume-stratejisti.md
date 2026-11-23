@@ -35,3 +35,8 @@ keşif videoları üretir. Proje kuralları CLAUDE.md'dedir; önce onu oku.
 - **Haftalık paylaşım takvimi önerisi** (7 short + 3 uzun video)
 - CLAUDE.md'de değişmesi gereken bir kural varsa öneri olarak yaz; dosyayı
   kendin değiştirme.
+
+## Kısalık (zorunlu)
+- Rapor en fazla 25 satır; telefonda tek ekranda okunabilmeli.
+- Yukarıdaki listelerde en fazla 5 madde ver; tablolar en fazla 5 satır.
+- Her madde tek satır; uzun açıklama, giriş veya tekrar yok.

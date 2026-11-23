@@ -32,3 +32,8 @@ gizem/tarih/keşif videoları üretir. Proje kuralları CLAUDE.md'dedir; önce o
 - **İşe yarayan 10 teknik** — bizim 3D sistemimize nasıl uyarlanır?
 - **Kaçınılacak 5 hata**
 - **Türkiye'deki 3 pazar boşluğu** ve her biri için örnek video fikri
+
+## Kısalık (zorunlu)
+- Rapor en fazla 25 satır; telefonda tek ekranda okunabilmeli.
+- Yukarıdaki listelerde en fazla 5 madde ver; tablolar en fazla 5 satır.
+- Her madde tek satır; uzun açıklama, giriş veya tekrar yok.
