@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Video Renderer</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; }
+  #stage canvas { display: block; }
+  #overlay { position: absolute; inset: 0; pointer-events: none; font-family: 'Montserrat', sans-serif; color: #fff;
+    --u: 1px; --accent: #f5c451; --accent2: #7fd6ff; }
+
+  /* Güvenli alan: dikeyde alt %20 ve sağ ~%14 platform arayüzüne bırakılır */
+  .title { position: absolute; left: 6%; right: 14%; text-align: center; will-change: transform, opacity; }
+  .title.pos-top { top: 13%; }
+  .title.pos-center { top: 38%; }
+  .title.pos-upper { top: 22%; }
+  .title-main { line-height: 1.02; }
+  .tw { display: inline-block; white-space: nowrap; }
+  .tl { display: inline-block; transform-origin: 50% 60%; }
+  .title-impact .title-main { font-weight: 900; font-size: calc(var(--u) * 92); letter-spacing: 0.01em;
+    text-shadow: 0 calc(var(--u)*6) calc(var(--u)*30) rgba(0,0,0,0.65), 0 0 calc(var(--u)*50) rgba(0,0,0,0.4); }
+  .title-impact .title-main .tw:last-child .tl { color: var(--accent); }
+  .title-cinematic .title-main, .title-legend .title-main { font-family: 'Cinzel', serif; font-weight: 900; font-size: calc(var(--u) * 78);
+    text-shadow: 0 calc(var(--u)*4) calc(var(--u)*28) rgba(0,0,0,0.75); }
+  .title-legend .title-main { color: var(--accent); font-weight: 700; font-size: calc(var(--u) * 64); }
+  .title-sub { margin-top: calc(var(--u) * 18); font-weight: 800; font-size: calc(var(--u) * 30); color: rgba(255,255,255,0.86);
+    text-shadow: 0 2px 16px rgba(0,0,0,0.8); }
+  .title-rule { height: calc(var(--u) * 4); width: 46%; margin: calc(var(--u)*20) auto 0; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+
+  /* Bilgi etiketi (chip) */
+  .label { position: absolute; will-change: transform, opacity; }
+  .label.slot-tl { left: 7%; top: 30%; }
+  .label.slot-ml { left: 7%; top: 44%; }
+  .label.slot-bl { left: 7%; top: 53%; }
+  .label.slot-tr { left: 46%; top: 30%; }
+  .label-chip { display: flex; align-items: stretch; gap: calc(var(--u) * 20); }
+  .label-bar { width: calc(var(--u) * 10); background: var(--accent); transform-origin: 50% 100%; border-radius: 3px;
+    box-shadow: 0 0 calc(var(--u)*24) var(--accent); }
+  .label-value { font-weight: 900; font-size: calc(var(--u) * 150); line-height: 0.95; color: #fff;
+    text-shadow: 0 calc(var(--u)*6) calc(var(--u)*30) rgba(0,0,0,0.6); }
+  .label-cap { margin-top: calc(var(--u) * 6); font-weight: 800; font-size: calc(var(--u) * 34); letter-spacing: 0.2em; color: var(--accent);
+    text-shadow: 0 2px 14px rgba(0,0,0,0.9); }
+
+  /* Haritaya sabitlenmiş yazı */
+  .label-map { transform: translate(-50%, -50%); }
+  .map-text { font-family: 'Cinzel', serif; font-weight: 900; font-size: calc(var(--u) * 54); color: #fff; white-space: nowrap;
+    text-shadow: 0 0 calc(var(--u)*24) rgba(0,0,0,0.9), 0 0 calc(var(--u)*6) rgba(0,0,0,0.9); }
+
+  /* 3B noktaya iğne + kart */
+  .label-pin { width: 0; height: 0; }
+  .pin-dot { position: absolute; left: 0; top: 0; width: calc(var(--u)*26); height: calc(var(--u)*26); border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 0 calc(var(--u)*8) rgba(255,255,255,0.18), 0 0 calc(var(--u)*30) var(--accent); }
+  .pin-line { position: absolute; left: calc(var(--u) * -1.5); bottom: 0; width: calc(var(--u)*3); height: calc(var(--u)*170);
+    background: linear-gradient(to top, var(--accent), rgba(255,255,255,0.0)); transform-origin: 50% 100%; }
+  .pin-card { position: absolute; left: 0; bottom: calc(var(--u)*175); white-space: nowrap; text-align: center; }
+  .pin-value { font-weight: 900; font-size: calc(var(--u) * 84); line-height: 1; text-shadow: 0 4px 24px rgba(0,0,0,0.75); }
+  .pin-cap { font-weight: 800; font-size: calc(var(--u) * 26); letter-spacing: 0.22em; color: var(--accent); text-shadow: 0 2px 12px rgba(0,0,0,0.9); }
+
+  /* Altyazı: alt %20'nin hemen üstünde, sağ kenardan uzak */
+  .sub { position: absolute; left: 45%; top: 71%; width: 76%; text-align: center; transform-origin: 50% 50%;
+    font-weight: 900; font-size: calc(var(--u) * 62); line-height: 1.12; color: #fff;
+    -webkit-text-stroke: calc(var(--u)*9) rgba(0,0,0,0.9); paint-order: stroke fill;
+    text-shadow: 0 calc(var(--u)*6) calc(var(--u)*18) rgba(0,0,0,0.6); }
+  .sw { display: inline-block; transform-origin: 50% 70%; margin: 0 0.13em; }
+  .sw.on { color: var(--accent); }
+
+  /* Kapanış kartı */
+  .endcard { position: absolute; left: 6%; right: 14%; top: 26%; text-align: center; }
+  .end-q { font-weight: 900; font-size: calc(var(--u) * 80); line-height: 1.08;
+    text-shadow: 0 calc(var(--u)*6) calc(var(--u)*30) rgba(0,0,0,0.75); }
+  .ew { display: inline-block; white-space: pre; }
+  .end-cta { margin: calc(var(--u)*40) auto 0; display: inline-flex; align-items: center; gap: calc(var(--u)*22);
+    padding: calc(var(--u)*18) calc(var(--u)*36); border-radius: calc(var(--u)*60); background: var(--accent); color: #111;
+    font-weight: 900; font-size: calc(var(--u)*38); letter-spacing: 0.06em; box-shadow: 0 0 calc(var(--u)*50) rgba(0,0,0,0.5); }
+  .cta-arrow { width: calc(var(--u)*20); height: calc(var(--u)*20); border-right: calc(var(--u)*7) solid #111; border-bottom: calc(var(--u)*7) solid #111; margin-top: calc(var(--u)*-10); }
+</style>
+</head>
+<body>
+<div id="stage"><div id="overlay"></div></div>
+<script type="importmap">
+{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }
+</script>
+<script type="module">
+  window.addEventListener('error', (e) => { window.__error = String(e.message || e); });
+  window.addEventListener('unhandledrejection', (e) => { window.__error = String(e.reason && (e.reason.stack || e.reason)); });
+  import('./main.js').catch((e) => { window.__error = String(e.stack || e); });
+</script>
+</body>
+</html>

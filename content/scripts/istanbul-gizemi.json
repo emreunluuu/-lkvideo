@@ -1,0 +1,302 @@
+{
+  "id": "istanbul-gizemi",
+  "topic": "İstanbul'un gizemi ve güzellikleri",
+  "format": "short",
+  "voice": {
+    "rate": 0.95,
+    "pitch": -2.0
+  },
+  "accent": "#f5c451",
+  "accent2": "#7fd6ff",
+  "grade": {
+    "exposure": 1.05,
+    "contrast": 1.1,
+    "saturation": 0.95,
+    "shadows": "#0d2a3a",
+    "highlights": "#ffb070",
+    "split": 0.16,
+    "lift": "#04060a",
+    "gain": "#fff1e2",
+    "vignette": 0.45,
+    "grain": 0.055,
+    "aberration": 0.0018
+  },
+  "music": {
+    "makam": "hicaz",
+    "root": "D",
+    "bpm": 74,
+    "seed": 2,
+    "layers": [
+      "drone",
+      "pad",
+      "ney",
+      "drum"
+    ],
+    "drum_from": 3
+  },
+  "segments": [
+    {
+      "id": "kanca",
+      "text": "İstanbul'un altında, kimsenin görmediği bir orman saklı. Ama ağaçlardan değil, mermer sütunlardan.",
+      "scene": {
+        "type": "cistern",
+        "params": {
+          "shot": "dolly"
+        }
+      },
+      "title": {
+        "text": "İstanbul'un altında bir orman var",
+        "style": "impact",
+        "at": 0.0,
+        "dur": 3.4,
+        "pos": "top"
+      },
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "sarnic",
+      "text": "Yerebatan Sarnıcı, altıncı yüzyılda inşa edildi. Tam üç yüz otuz altı sütun, karanlık suyun içinden yükseliyor.",
+      "scene": {
+        "type": "cistern",
+        "params": {
+          "shot": "crane"
+        }
+      },
+      "transition": "whip",
+      "labels": [
+        {
+          "value": "6. yüzyıl",
+          "caption": "Bizans dönemi",
+          "at": "altıncı",
+          "slot": "tl",
+          "dur": 2.6
+        },
+        {
+          "value": "336",
+          "caption": "mermer sütun",
+          "at": "üç",
+          "slot": "tl",
+          "count": true,
+          "dur": 3.0
+        }
+      ],
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "medusa",
+      "text": "En dipte iki Medusa başı var. Biri baş aşağı, biri yan. Neden böyle konuldukları hâlâ bilinmiyor.",
+      "scene": {
+        "type": "medusa"
+      },
+      "transition": "zoom",
+      "labels": [
+        {
+          "value": "Baş aşağı",
+          "style": "pin",
+          "anchor": "head1",
+          "at": "Biri",
+          "dur": 2.2
+        },
+        {
+          "value": "Yan",
+          "style": "pin",
+          "anchor": "head2",
+          "at": "yan",
+          "dur": 2.0
+        }
+      ],
+      "title": {
+        "text": "Gizem",
+        "sub": "hâlâ çözülemedi",
+        "style": "cinematic",
+        "at": "Neden",
+        "dur": 3.0,
+        "pos": "top"
+      },
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "bogaz",
+      "text": "Yeryüzüne çıkalım. Avrupa ile Asya'yı, yaklaşık otuz kilometrelik bir boğaz ayırıyor.",
+      "scene": {
+        "type": "strait_map",
+        "cues": {
+          "draw": "Avrupa"
+        }
+      },
+      "transition": "flash",
+      "labels": [
+        {
+          "value": "Avrupa",
+          "style": "map",
+          "anchor": "europe",
+          "at": "Avrupa",
+          "dur": 4.5
+        },
+        {
+          "value": "Asya",
+          "style": "map",
+          "anchor": "asia",
+          "at": "Asya'yı",
+          "dur": 4.0
+        },
+        {
+          "value": "~30 km",
+          "caption": "İstanbul Boğazı",
+          "at": "otuz",
+          "slot": "tl",
+          "dur": 2.8
+        }
+      ],
+      "ambience": [
+        "wind"
+      ]
+    },
+    {
+      "id": "akinti",
+      "text": "Ama asıl sır suyun altında. Yüzeyde akıntı güneye akarken, derinlerde kuzeye akan ikinci bir akıntı var.",
+      "scene": {
+        "type": "currents",
+        "cues": {
+          "surface": "Yüzeyde",
+          "deep": "derinlerde"
+        }
+      },
+      "transition": "zoom",
+      "labels": [
+        {
+          "value": "Güneye",
+          "caption": "yüzey akıntısı",
+          "style": "pin",
+          "anchor": "surface",
+          "at": "güneye",
+          "dur": 2.4
+        },
+        {
+          "value": "Kuzeye",
+          "caption": "dip akıntısı",
+          "style": "pin",
+          "anchor": "deep",
+          "at": "kuzeye",
+          "dur": 2.6
+        }
+      ],
+      "ambience": [
+        "sea"
+      ]
+    },
+    {
+      "id": "ayasofya",
+      "text": "Ayasofya, beş yüz otuz yedide tamamlandı. Kubbesi yerden yaklaşık elli beş metre yüksekte.",
+      "scene": {
+        "type": "hagia",
+        "cues": {
+          "measure": "elli"
+        }
+      },
+      "transition": "whip",
+      "labels": [
+        {
+          "value": "537",
+          "caption": "tamamlandı",
+          "at": "beş",
+          "slot": "tl",
+          "count": true,
+          "dur": 2.6
+        },
+        {
+          "value": "≈55 m",
+          "caption": "kubbe yüksekliği",
+          "style": "pin",
+          "anchor": "domeTop",
+          "at": "elli",
+          "dur": 2.6
+        }
+      ],
+      "ambience": [
+        "wind",
+        "gulls"
+      ]
+    },
+    {
+      "id": "kizkulesi",
+      "text": "Kız Kulesi'nin ise bir efsanesi var. Rivayete göre kral, kızını kehanetteki yılandan korumak için kuleyi denizin ortasına yaptırdı.",
+      "scene": {
+        "type": "maiden",
+        "cues": {
+          "legend": "Rivayete"
+        }
+      },
+      "transition": "flash",
+      "title": {
+        "text": "Rivayete göre",
+        "style": "legend",
+        "at": "Rivayete",
+        "dur": 2.6,
+        "pos": "top"
+      },
+      "ambience": [
+        "sea",
+        "gulls"
+      ]
+    },
+    {
+      "id": "kapanis",
+      "text": "Sence İstanbul'un en büyük gizemi hangisi? Yorumlara yaz.",
+      "scene": {
+        "type": "skyline"
+      },
+      "transition": "dip",
+      "ambience": [
+        "sea",
+        "gulls"
+      ]
+    }
+  ],
+  "endcard": {
+    "text": "Sence İstanbul'un en büyük gizemi hangisi?",
+    "cta": "Yorumlara yaz",
+    "at": "Sence"
+  },
+  "publish": {
+    "title": "İstanbul'un Altındaki Gizli Orman ve 3 Büyük Gizem",
+    "description": "İstanbul'un altında 336 sütunlu bir 'orman', Boğaz'ın derinlerinde ters akan gizli bir akıntı ve Kız Kulesi'nin efsanesi… Yerebatan Sarnıcı'ndaki Medusa başlarının neden ters ve yan konulduğu bugün hâlâ kesin olarak bilinmiyor.\n\nSence İstanbul'un en büyük gizemi hangisi? Yorumlara yaz!\n\nBu videodaki animasyonlar bilgisayarla üretilmiştir; seslendirme yapay zekâ ile sentezlenmiştir.\n\nKaynaklar:\n- Yerebatan Sarnıcı (İBB Kültür A.Ş.)\n- Ayasofya (UNESCO Dünya Mirası: İstanbul'un Tarihi Alanları)\n- İstanbul Boğazı iki tabakalı akıntı sistemi (oşinografi literatürü)",
+    "hashtags": [
+      "#İstanbul",
+      "#Yerebatan",
+      "#Ayasofya",
+      "#KızKulesi",
+      "#gizem"
+    ],
+    "tags": [
+      "istanbul",
+      "istanbul gizemleri",
+      "yerebatan sarnıcı",
+      "medusa başı",
+      "ayasofya",
+      "kız kulesi",
+      "istanbul boğazı",
+      "boğaz akıntısı",
+      "istanbul tarihi",
+      "gizemli yerler"
+    ],
+    "category_id": "27",
+    "synthetic_disclosure": true
+  },
+  "sources": [
+    "Yerebatan Sarnıcı: 6. yy (I. Justinianus, 532), 336 sütun (12 sıra x 28) — yerebatan.com / İBB",
+    "Medusa başları: biri ters, biri yan konumda; nedeni kesin olarak bilinmiyor — yerebatan.com",
+    "İstanbul Boğazı ~31 km uzunluk; yüzeyde Karadeniz'den Marmara'ya, dipte Marmara'dan Karadeniz'e akıntı",
+    "Ayasofya: 537'de tamamlandı; kubbe yüksekliği ~55,6 m, çap ~31 m",
+    "Kız Kulesi yılan efsanesi: halk anlatısı (rivayet)"
+  ]
+}

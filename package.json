@@ -1,0 +1,12 @@
+{
+  "name": "otomatik-video",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Türkçe merak uyandıran 3D animasyonlu video üretim sistemi",
+  "scripts": {
+    "render": "node pipeline/render.js"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  }
+}

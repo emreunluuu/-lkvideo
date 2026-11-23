@@ -1,0 +1,78 @@
+# Günlük kısa video üretimi + insan onaylı yayın.
+# "yayin" ortamına (Settings → Environments) "Required reviewers" ekleyin: videoyu
+# Artifacts'tan indirip izleyen kişi onaylamadan yayın adımı ÇALIŞMAZ.
+name: Video üret ve onaydan sonra yayınla
+
+on:
+  schedule:
+    - cron: "17 6 * * *"   # her gün 09:17 (TR, UTC+3)
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Senaryo yolu (boşsa topics.txt'teki sıradaki konu)"
+        required: false
+
+jobs:
+  uret:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      folder: ${{ steps.produce.outputs.folder }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Bağımlılıklar
+        run: |
+          sudo apt-get update && sudo apt-get install -y ffmpeg
+          pip install -r requirements.txt
+          npm ci || npm install
+          npm i -g playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: Senaryo (yoksa taslak üret)
+        if: ${{ !inputs.scenario }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m pipeline.generate_script --next || echo "Tüm konuların senaryosu mevcut"
+      - name: Videoyu üret
+        id: produce
+        env:
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+        run: |
+          python -m pipeline.produce ${{ inputs.scenario || '--next' }} --tts google --workers 3
+          echo "folder=$(ls -td output/*/ | head -1)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: video
+          path: |
+            output/*/video.mp4
+            output/*/kapak.jpg
+            output/*/altyazi.srt
+            output/*/metadata.json
+            output/*/aciklama.txt
+            output/*/rapor.json
+          retention-days: 14
+
+  yayinla:
+    needs: uret
+    runs-on: ubuntu-latest
+    environment: yayin   # gerekli onaylayıcı burada devreye girer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests
+      - uses: actions/download-artifact@v4
+        with: { name: video, path: output }
+      - name: Onayla ve yükle
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+        run: |
+          d=$(ls -td output/*/ | head -1)
+          python -m pipeline.publish "$d" --approve --upload youtube,instagram,tiktok
