@@ -1,0 +1,66 @@
+{
+  "id": "istanbul-gizemi",
+  "title": "İstanbul'un Gizemi ve Güzellikleri",
+  "format": "vertical",
+  "seed": 1453,
+  "accent": "#FFD24D",
+  "grade": { "tint": "#ffe2bf", "lift": "#061018", "grain": 0.035, "vignette": 0.55, "bloom": 1.0 },
+  "music": { "scale": "hicaz", "root": 146.83, "tempo": 76, "mood": "gizem" },
+  "voice": { "name": "tr-TR-Wavenet-E", "rate": 0.95, "pitch": -2.0 },
+  "thumbText": ["İstanbul'un altında", "GİZLİ SARAY"],
+  "scenes": [
+    {
+      "kind": "city_night", "cam": "flyin",
+      "title": ["İstanbul'un", "Gizemi"],
+      "label": "İstanbul • Boğaz",
+      "sfx": ["impact"],
+      "narration": "Bu şehrin altında, bin beş yüz yıldır karanlıkta bekleyen bir saray var. Üstünden her gün binlerce kişi geçiyor, ama çoğu bunu bilmiyor."
+    },
+    {
+      "kind": "cistern", "cam": "dolly",
+      "label": "Yerebatan Sarnıcı",
+      "chip": { "big": "336", "small": "sütun" }, "chipAt": 2.2,
+      "narration": "Yerebatan Sarnıcı. Altıncı yüzyılda, Bizans İmparatoru Justinianus döneminde inşa edildi. Suyun içinden tam üç yüz otuz altı sütun yükseliyor."
+    },
+    {
+      "kind": "cistern", "cam": "low",
+      "label": "Medusa başları",
+      "chip": { "big": "2", "small": "Medusa başı" }, "chipAt": 1.6,
+      "narration": "Ve en dipte, iki sütunun altında Medusa başları duruyor. Biri yan, biri ters. Neden böyle konulduklarını kimse kesin olarak bilmiyor."
+    },
+    {
+      "kind": "hagia", "cam": "orbit",
+      "label": "Ayasofya",
+      "chip": { "big": "537", "small": "yılında tamamlandı" }, "chipAt": 1.4,
+      "narration": "Hemen yukarıda Ayasofya. Beş yüz otuz yedi yılında tamamlandığında dünyanın en büyük katedraliydi ve bu unvanı yaklaşık bin yıl korudu."
+    },
+    {
+      "kind": "galata", "cam": "crane",
+      "label": "Galata Kulesi",
+      "chip": { "big": "1348", "small": "Cenevizliler yaptı" }, "chipAt": 1.0,
+      "narration": "Galata Kulesi'ni bin üç yüz kırk sekizde Cenevizliler yaptı. Rivayete göre Hezarfen Ahmed Çelebi, kendi yaptığı kanatlarla buradan Üsküdar'a uçtu."
+    },
+    {
+      "kind": "maiden", "cam": "orbit",
+      "label": "Kız Kulesi • Rivayet",
+      "narration": "Kız Kulesi'nin de bir efsanesi var. Rivayete göre bir kral, kızını yılandan korumak için onu denizin ortasındaki bu kuleye kapattı."
+    },
+    {
+      "kind": "city_night", "cam": "reveal",
+      "title": ["İki kıtanın şehri", "İstanbul"], "titleOut": 99,
+      "sfx": ["impact"],
+      "narration": "İki kıtaya yayılan, her köşesinde başka bir sır saklayan şehir: İstanbul. Sence en büyük sırrı ne? Yorumlara yaz."
+    }
+  ],
+  "meta": {
+    "youtube_title": "İstanbul'un Altındaki 1500 Yıllık Gizli Saray 🔍 #shorts",
+    "description": "Yerebatan Sarnıcı'nın ters Medusa başlarından Galata Kulesi'nden uçan Hezarfen'e: İstanbul'un gizemleri 60 saniyede.\n\nSence İstanbul'un en büyük sırrı ne? Yorumlara yaz!\n\nBu video 3D animasyon ve yapay zekâ seslendirmesiyle üretilmiştir.",
+    "tags": ["istanbul", "yerebatan sarnıcı", "ayasofya", "galata kulesi", "kız kulesi", "medusa", "tarih", "gizem", "bilinmeyenler"],
+    "hashtags": ["#istanbul", "#tarih", "#gizem", "#shorts"]
+  },
+  "sources": [
+    "https://yerebatan.com/en/historical-structure/",
+    "https://www.britannica.com/topic/Hagia-Sophia",
+    "https://www.britannica.com/place/Galata-Tower"
+  ]
+}

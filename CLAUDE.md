@@ -94,7 +94,20 @@ videoya az farklılık gösteren içerikleri para kazanmaya kapatır. Bu yüzden
 - `/arastirma [odak]` komutu ilk üçünü paralel çalıştırıp haftalık özet çıkarır.
 - Raporlar `research/` klasörüne yazılır ve depoya commit edilir.
 
-## 10. Teknik notlar
+## 10. Üretim sistemi
+
+- Komutlar ve dosya yapısı: README.md. Tam video:
+  `python3 pipeline/build.py videos/<id>/script.json`
+- Yeni video akışı: konu → senaryo (`videos/<id>/script.json`) → `bilgi-dogrulayici`
+  → `--stills` ile kontrol kareleri (gözle incele) → tam render → kullanıcı onayı.
+- **Çeşitlilik zorunlu:** Her yeni konu için `engine/render.html` içindeki `SCENES`
+  nesnesine o konuya özel en az 2 yeni sahne ve kamera hareketi yaz; renk paleti
+  (`grade`, `accent`), makam (`music.scale`) ve `seed` her videoda farklı olsun.
+  Sadece metni değiştirip eski sahneleri tekrar kullanma.
+- Seslendirme anahtarı yoksa video sessiz anlatımla üretilir; anahtar eklenince
+  aynı komut seslendirmeyi ekleyip süreleri yeniden hesaplar.
+
+## 11. Teknik notlar
 
 - Gizli anahtarlar sadece ortam değişkenlerinde veya GitHub Secrets'ta tutulur.
 - Üretilen video dosyaları (`output/`) depoya commit edilmez.
