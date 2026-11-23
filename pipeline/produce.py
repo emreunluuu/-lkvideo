@@ -20,11 +20,12 @@ from pathlib import Path
 import numpy as np
 
 from . import audio as A
-from .tts import SR, make_engine
+from .tts import SR, Speech, make_engine
 
 ROOT = Path(__file__).resolve().parent.parent
 FORMATS = {
     "short": {"width": 1080, "height": 1920, "fps": 30, "min": 55, "max": 65},
+    "short4k": {"width": 2160, "height": 3840, "fps": 30, "min": 55, "max": 65},
     "long": {"width": 1920, "height": 1080, "fps": 30, "min": 480, "max": 600},
 }
 TRANSITION_SFX_LEAD = {"whip": 0.35, "zoom": 0.3, "flash": 0.25, "dip": 0.4, "crossfade": 0.4}
@@ -107,7 +108,17 @@ class Producer:
         self.rng = np.random.default_rng(self.sc.get("music", {}).get("seed", 1))
 
     # ------------------------------------------------------------------ 1. Seslendirme
+    @property
+    def no_voice(self):
+        return bool(self.args.no_voice or self.sc.get("voice") is False)
+
     def narrate(self):
+        if self.no_voice:
+            # Seslendirmesiz deneme/teaser: her segmentin süresi senaryoda verilir
+            self.speech = [Speech(np.zeros(int(seg["duration"] * SR), dtype=np.float32), [], "none", "none") for seg in self.sc["segments"]]
+            self.engine_name = self.voice_name = "none"
+            print("[tts] seslendirme yok (deneme modu)")
+            return
         v = self.sc.get("voice", {})
         eng = make_engine(self.args.tts, v.get("rate", 0.95), v.get("pitch", -2.0), v.get("name"))
         print(f"[tts] motor={type(eng).__name__} ses={eng.voice}")
@@ -123,6 +134,9 @@ class Producer:
     def timeline(self):
         segs = self.sc["segments"]
         lead, gap, tail = 0.35, self.sc.get("gap", 0.45), self.sc.get("tail", 2.6)
+        off = 0.22  # sahne kesmesi seslendirmeden biraz önce
+        if self.no_voice:
+            lead, gap, tail, off = 0.0, 0.0, self.sc.get("tail", 0.0), 0.0
         t = lead
         self.voice_starts = []
         for i, sp in enumerate(self.speech):
@@ -139,8 +153,8 @@ class Producer:
             vs = self.voice_starts[i]
             words = [{"w": w.w, "start": round(vs + w.start, 3), "end": round(vs + w.end, 3)} for w in sp.words]
             seg["_words"] = words
-            start = 0.0 if i == 0 else round(vs - 0.22, 3)
-            end = self.duration if i == len(segs) - 1 else round(self.voice_starts[i + 1] - 0.22, 3)
+            start = 0.0 if i == 0 else round(vs - off, 3)
+            end = self.duration if i == len(segs) - 1 else round(self.voice_starts[i + 1] - off, 3)
             self.seg_windows.append((start, end))
             at = lambda ph: words[find_phrase(words, ph)]["start"] if isinstance(ph, str) else start + float(ph)
             cue_times = {k: round(at(v) - start, 3) for k, v in seg["scene"].get("cues", {}).items()}
@@ -214,8 +228,10 @@ class Producer:
         }
         (self.out / "manifest.json").write_text(json.dumps(self.manifest, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"[zaman] toplam {self.duration:.2f} sn, {len(scenes)} sahne, {len(subs)} altyazı parçası")
+        for e in self.sc.get("sfx", []):  # senaryoda elle zamanlanmış efektler (mutlak saniye)
+            self.sfx.append((e["kind"], float(e["at"]), {k: v for k, v in e.items() if k not in ("kind", "at")}))
         lo, hi = self.fmt["min"], self.fmt["max"]
-        if not (lo <= self.duration <= hi):
+        if not self.sc.get("teaser") and not (lo <= self.duration <= hi):
             print(f"[UYARI] süre {self.duration:.1f} sn — hedef aralık {lo}-{hi} sn. Metni kısalt/uzat.")
 
     # ------------------------------------------------------------------ 3. Altyazı (.srt)
@@ -268,6 +284,14 @@ class Producer:
                 s = A.sfx_shimmer(rng, root, makam) * 0.45
             elif kind == "flash":
                 s = A.sfx_flash(rng) * 0.2
+            elif kind == "braam":
+                s = A.sfx_braam(rng, root, o.get("dur", 2.4)) * o.get("gain", 0.5)
+            elif kind == "boom":
+                s = A.sfx_impact(rng, o.get("size", 1.0)) * o.get("gain", 0.5)
+            elif kind == "reverse":
+                s = A.sfx_reverse_swell(rng, root, o.get("dur", 1.2)) * o.get("gain", 0.35)
+            elif kind == "tick":
+                s = A.sfx_tick(rng) * o.get("gain", 0.25)
             else:
                 continue
             i = int(max(0, t0) * SR)
@@ -381,6 +405,7 @@ def main():
     ap.add_argument("--date")
     ap.add_argument("--stills-only", action="store_true")
     ap.add_argument("--audio-only", action="store_true", help="görüntüyü koru, sesi yeniden üret")
+    ap.add_argument("--no-voice", action="store_true", help="seslendirmesiz deneme (segment süreleri senaryodan)")
     a = ap.parse_args()
     path = next_scenario() if a.next or not a.scenario else Path(a.scenario)
     Producer(path, a).run()

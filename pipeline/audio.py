@@ -221,10 +221,10 @@ def music_bed(dur, cfg, seg_starts, rng):
         scale = [root + 24 + iv for iv in makam] + [root + 36 + iv for iv in makam[1:4]]
         ir = reverb_ir(3.2, seed=5, bright=0.4)
         ney = np.zeros(n)
-        for i, s0 in enumerate(seg_starts):
-            if i % 2 == 0 or i == len(seg_starts) - 1:
-                ph = ney_phrase(scale, rng, length=float(rng.uniform(3.0, 5.0)))
-                place(ney, ph * 0.5, s0 + 0.2)
+        ney_times = cfg.get("ney_at") or [s0 + 0.2 for i, s0 in enumerate(seg_starts) if i % 2 == 0 or i == len(seg_starts) - 1]
+        for t0 in ney_times:
+            ph = ney_phrase(scale, rng, length=float(rng.uniform(3.0, 5.0)))
+            place(ney, ph * 0.5, t0)
         out += apply_reverb(pan(ney, -0.2)[:, 0] * 1.4, ir, 0.45) * 0.55
 
     if "drum" in layers:
@@ -244,10 +244,54 @@ def music_bed(dur, cfg, seg_starts, rng):
         fade = np.clip((t - start) / 4.0, 0, 1) * np.clip((dur - 2.5 - t) / 2.0, 0, 1)
         out += apply_reverb(drums * fade * 0.5, reverb_ir(1.4, seed=8, bright=0.3), 0.25)
 
+    if "pulse" in layers:
+        # Gerilim ostinatosu: 8'lik bas notaları (makamın 1. ve 2. derecesi), filtre giderek açılır
+        bpm = cfg.get("bpm", 108)
+        step = 60 / bpm / 2
+        start = cfg.get("pulse_from", 0.0)
+        pul = np.zeros(n)
+        k = 0
+        tb = start
+        seq = cfg.get("pulse_seq", [0, 0, 0, 1, 0, 0, 12, 1])
+        while tb < dur - 0.3:
+            m = root + seq[k % len(seq)] if seq[k % len(seq)] < 12 else root + 12
+            nn = int(0.22 * SR)
+            tt = t_axis(nn)
+            f = midi_hz(m)
+            saw = 2 * ((f * tt) % 1.0) - 1
+            prog = np.clip((tb - start) / max(1e-3, dur - start), 0, 1)
+            note = lp(saw, 250 + 1400 * prog) * np.exp(-tt * 9) * (1.0 if k % 2 == 0 else 0.7)
+            place(pul, note, tb)
+            tb += step
+            k += 1
+        out += pan(np.tanh(pul * 1.6) * 0.35, 0)
+
+    if "taiko" in layers:
+        bpm = cfg.get("bpm", 108)
+        bar = 4 * 60 / bpm
+        tk = np.zeros(n)
+        tb = cfg.get("taiko_from", 0.0)
+        while tb < dur - 0.5:
+            place(tk, taiko_hit(rng, 1.0), tb)
+            place(tk, taiko_hit(rng, 0.45, high=True), tb + bar * 0.75)
+            place(tk, taiko_hit(rng, 0.55, high=True), tb + bar * 0.875)
+            tb += bar
+        out += apply_reverb(tk * 0.6, reverb_ir(2.2, seed=13, bright=0.25), 0.3)
+
     # Giriş/çıkış
     out *= np.clip(t / 0.4, 0, 1)[:, None]
     out *= np.clip((dur - t) / 1.6, 0, 1)[:, None]
     return out
+
+
+def taiko_hit(rng, gain=1.0, high=False):
+    n = int(1.2 * SR)
+    t = t_axis(n)
+    f0, f1 = (95, 160) if high else (48, 110)
+    f = f0 + (f1 - f0) * np.exp(-t * 22)
+    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * (9 if high else 4.5))
+    skin = lp(rng.standard_normal(n), 1800) * np.exp(-t * 35) * 0.5
+    return np.tanh((body + skin) * 1.4) * gain
 
 
 # ============================================================================ Ortam
@@ -365,6 +409,43 @@ def sfx_flash(rng):
     tss = hp(rng.standard_normal(n), 3000) * np.exp(-t * 9) * 0.25
     thump = np.sin(2 * np.pi * (60 + 60 * np.exp(-t * 30)) * t) * np.exp(-t * 10) * 0.6
     return apply_reverb(pan(tss + thump, 0), reverb_ir(1.2, seed=11), 0.3)
+
+
+def sfx_braam(rng, root_m=38, dur=2.4):
+    """Sinematik 'braam': detune edilmiş testere dişleri, hızla açılıp kapanan filtre, hafif distorsiyon."""
+    n = int(dur * SR)
+    t = t_axis(n)
+    sig = np.zeros(n)
+    for m, g in [(root_m - 12, 1.0), (root_m, 0.7), (root_m + 7 - 12, 0.5)]:
+        for det in (-0.12, 0.0, 0.13):
+            f = midi_hz(m + det)
+            sig += g * (2 * ((f * t + rng.random()) % 1.0) - 1)
+    bright, dark = lp(sig, 2600, 2), lp(sig, 380, 2)
+    env_f = np.exp(-t * 2.2)
+    s = bright * env_f + dark * (1 - env_f)
+    amp = np.minimum(1, t / 0.03) * np.exp(-t * (1.6 / dur))
+    s = np.tanh(s * 0.35) * amp
+    s += np.sin(2 * np.pi * midi_hz(root_m - 24) * t) * np.exp(-t * 1.2) * 0.8  # alt bas
+    return apply_reverb(pan(s * 0.6, 0), reverb_ir(3.0, seed=17, bright=0.35), 0.35)
+
+
+def sfx_reverse_swell(rng, root_m=38, dur=1.2):
+    """Kesmeye doğru yükselen ters yankı + akor; tam kesme anında biter."""
+    n = int(dur * SR)
+    t = t_axis(n)
+    u = t / dur
+    noise = lp(rng.standard_normal(n), 3000) * (u ** 3)
+    chord = sum(np.sin(2 * np.pi * midi_hz(root_m + iv) * t) for iv in (12, 19, 24, 25)) / 4
+    s = (noise * 0.5 + chord * 0.6) * (u ** 2.5)
+    wet = apply_reverb(pan(s, 0), reverb_ir(1.8, seed=19, bright=0.6), 0.5)
+    return wet * np.clip((1 - u) * 60, 0, 1)[:, None]
+
+
+def sfx_tick(rng):
+    n = int(0.12 * SR)
+    t = t_axis(n)
+    s = bp(rng.standard_normal(n), 2500, 7000) * np.exp(-t * 120) + np.sin(2 * np.pi * 1800 * t) * np.exp(-t * 90) * 0.5
+    return pan(s, 0.15)
 
 
 # ============================================================================ Miks

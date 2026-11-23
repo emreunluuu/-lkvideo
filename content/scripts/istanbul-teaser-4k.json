@@ -1,0 +1,214 @@
+{
+  "id": "istanbul-teaser-4k",
+  "topic": "İstanbul'un gizemi ve güzellikleri (ilk 10 sn deneme)",
+  "format": "short4k",
+  "teaser": true,
+  "voice": false,
+  "accent": "#f2b84b",
+  "grade": {
+    "exposure": 1.2,
+    "contrast": 1.1,
+    "saturation": 0.86,
+    "shadows": "#0b2833",
+    "highlights": "#ffd6a8",
+    "split": 0.16,
+    "lift": "#030507",
+    "gain": "#fff3e4",
+    "vignette": 0.5,
+    "grain": 0.06,
+    "aberration": 0.0012
+  },
+  "music": {
+    "makam": "hicaz",
+    "root": "D",
+    "bpm": 108,
+    "seed": 4,
+    "layers": [
+      "drone",
+      "pulse",
+      "taiko",
+      "ney"
+    ],
+    "pulse_from": 0.0,
+    "taiko_from": 0.0,
+    "ney_at": [
+      4.5
+    ]
+  },
+  "segments": [
+    {
+      "id": "giris",
+      "duration": 2.222,
+      "scene": {
+        "type": "cistern_hd",
+        "params": {
+          "shot": "push",
+          "seed": 7
+        }
+      },
+      "title": {
+        "text": "İstanbul'un altında",
+        "style": "impact",
+        "at": 0.05,
+        "dur": 2.05,
+        "pos": "top"
+      },
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "sutun",
+      "duration": 2.222,
+      "scene": {
+        "type": "cistern_hd",
+        "params": {
+          "shot": "crane",
+          "seed": 7
+        }
+      },
+      "transition": "whip",
+      "title": {
+        "text": "bir orman var",
+        "style": "impact",
+        "at": 0.12,
+        "dur": 1.95,
+        "pos": "top"
+      },
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "orman",
+      "duration": 2.223,
+      "scene": {
+        "type": "cistern_hd",
+        "params": {
+          "shot": "reveal",
+          "seed": 7
+        }
+      },
+      "transition": "zoom",
+      "labels": [
+        {
+          "value": "336",
+          "caption": "mermer sütun",
+          "at": 0.3,
+          "dur": 1.8,
+          "slot": "ml",
+          "count": true
+        }
+      ],
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "yakin",
+      "duration": 1.667,
+      "scene": {
+        "type": "cistern_hd",
+        "params": {
+          "shot": "macro",
+          "seed": 7,
+          "dof": {
+            "focus": 2.75,
+            "aperture": 0.012,
+            "maxblur": 0.014
+          }
+        }
+      },
+      "transition": "whip",
+      "labels": [
+        {
+          "value": "6. yüzyıl",
+          "caption": "yaklaşık 1500 yıllık",
+          "at": 0.15,
+          "dur": 1.45,
+          "slot": "ml"
+        }
+      ],
+      "ambience": [
+        "cave",
+        "drips"
+      ]
+    },
+    {
+      "id": "dip",
+      "duration": 1.667,
+      "scene": {
+        "type": "cistern_hd",
+        "params": {
+          "shot": "abyss",
+          "seed": 7,
+          "special": true,
+          "dimTo": 0.12,
+          "lampIntensity": 6.0
+        }
+      },
+      "transition": "dip",
+      "title": {
+        "text": "En dipte bir sır var",
+        "style": "cinematic",
+        "at": 0.25,
+        "dur": 1.6,
+        "pos": "upper"
+      },
+      "ambience": [
+        "cave"
+      ]
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "braam",
+      "at": 0.0,
+      "dur": 2.6,
+      "gain": 0.55
+    },
+    {
+      "kind": "reverse",
+      "at": 1.222,
+      "dur": 1.0,
+      "gain": 0.3
+    },
+    {
+      "kind": "reverse",
+      "at": 3.244,
+      "dur": 1.2,
+      "gain": 0.35
+    },
+    {
+      "kind": "boom",
+      "at": 4.444,
+      "size": 0.9,
+      "gain": 0.45
+    },
+    {
+      "kind": "tick",
+      "at": 7.2,
+      "gain": 0.2
+    },
+    {
+      "kind": "tick",
+      "at": 7.75,
+      "gain": 0.2
+    },
+    {
+      "kind": "braam",
+      "at": 8.333,
+      "dur": 2.0,
+      "gain": 0.4
+    }
+  ],
+  "publish": {
+    "title": "Deneme: İstanbul'un altındaki orman (4K, 10 sn)",
+    "description": "Seslendirmesiz görsel kalite denemesi.",
+    "tags": [],
+    "hashtags": []
+  }
+}

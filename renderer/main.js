@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { tickAll } from './lib/env.js';
 import { clamp } from './lib/util.js';
 import { Overlay } from './overlay.js';
@@ -19,6 +20,7 @@ stage.style.width = W + 'px'; stage.style.height = H + 'px';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(1);
+renderer.info.autoReset = false; // kare başına toplam çizim istatistiği (window.__info)
 renderer.setSize(W, H);
 renderer.toneMapping = THREE.NoToneMapping; // ton eşleme son geçişte yapılır
 renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
@@ -41,8 +43,11 @@ function makeSlot() {
   comp.renderToScreen = false;
   const rp = new RenderPass(new THREE.Scene(), new THREE.PerspectiveCamera());
   const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.6, 0.55, 0.82);
-  comp.addPass(rp); comp.addPass(bloom);
-  return { comp, rp, bloom };
+  // Alan derinliği (DOF): sadece sahne istediğinde açılır (pahalı: ek derinlik render'ı)
+  const bokeh = new BokehPass(new THREE.Scene(), new THREE.PerspectiveCamera(), { focus: 3, aperture: 0.005, maxblur: 0.01 });
+  bokeh.enabled = false;
+  comp.addPass(rp); comp.addPass(bokeh); comp.addPass(bloom);
+  return { comp, rp, bloom, bokeh };
 }
 const slots = [makeSlot(), makeSlot()];
 
@@ -55,12 +60,12 @@ const finalMat = new THREE.ShaderMaterial({
     uTintS: { value: new THREE.Color(grade.shadows || '#0d2a3a') }, uTintH: { value: new THREE.Color(grade.highlights || '#ffb070') },
     uSplit: { value: grade.split ?? 0.18 }, uVig: { value: grade.vignette ?? 0.42 }, uGrain: { value: grade.grain ?? 0.05 },
     uCA: { value: grade.aberration ?? 0.0015 }, uFlash: { value: 0 }, uFade: { value: 1 }, uSeed: { value: 0 },
-    uRes: { value: new THREE.Vector2(W, H) },
+    uRes: { value: new THREE.Vector2(W, H) }, uGrainScale: { value: Math.max(1, Math.min(W, H) / 1080) },
   },
   vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
   fragmentShader: /* glsl */ `
     uniform sampler2D tA, tB; uniform float uMix, uType, uHasB, uExposure, uContrast, uSat, uSplit, uVig, uGrain, uCA, uFlash, uFade, uSeed;
-    uniform vec3 uLift, uGain, uTintS, uTintH; uniform vec2 uRes;
+    uniform vec3 uLift, uGain, uTintS, uTintH; uniform vec2 uRes; uniform float uGrainScale;
     varying vec2 vUv;
     vec3 aces(vec3 x){ const float a=2.51,b=0.03,c=2.43,d=0.59,e=0.14; return clamp((x*(a*x+b))/(x*(c*x+d)+e),0.0,1.0); }
     float h12(vec2 p){ vec3 p3 = fract(vec3(p.xyx) * .1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
@@ -129,7 +134,7 @@ const finalMat = new THREE.ShaderMaterial({
       col = clamp(col, 0.0, 1.0);
       col = pow(col, vec3(1.0/2.2)); // doğrusal -> ekran
       // Film greni (ekran uzayında, gölgelerde daha belirgin)
-      float g = h12(uv * uRes + uSeed * 91.7) - 0.5;
+      float g = h12(floor(uv * uRes / uGrainScale) + uSeed * 91.7) - 0.5;
       col += g * uGrain * (1.2 - dot(col, vec3(0.33)));
       col = mix(col, vec3(1.0), uFlash);
       col *= uFade;
@@ -152,6 +157,10 @@ function renderScene(slot, inst, globalT) {
   slot.bloom.strength = inst.bloom?.strength ?? 0.6;
   slot.bloom.radius = inst.bloom?.radius ?? 0.55;
   slot.bloom.threshold = inst.bloom?.threshold ?? 0.82;
+  if (inst.dof) {
+    slot.bokeh.enabled = true; slot.bokeh.scene = inst.scene; slot.bokeh.camera = inst.camera;
+    const u = slot.bokeh.uniforms; u.focus.value = inst.dof.focus; u.aperture.value = inst.dof.aperture; u.maxblur.value = inst.dof.maxblur;
+  } else slot.bokeh.enabled = false;
   slot.comp.render();
   return slot.comp.readBuffer.texture;
 }
@@ -177,6 +186,7 @@ function activeAt(t) {
 }
 
 window.renderFrame = (t, frameIndex = 0) => {
+  renderer.info.reset();
   const act = activeAt(t);
   const ta = renderScene(slots[0], act.a, t);
   finalMat.uniforms.tA.value = ta;
@@ -207,4 +217,5 @@ await document.fonts.ready;
 // Shader derlemelerini ve doku yüklemelerini ısıt
 for (const b of built) { window.renderFrame(b.def.start + 0.01); }
 window.renderFrame(0);
+window.__info = () => ({ ...renderer.info.render, programs: renderer.info.programs?.length, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures });
 window.__ready = true;
