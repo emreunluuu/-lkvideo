@@ -84,9 +84,14 @@ async function renderStills(port) {
   await browser.close();
 }
 
+// Bit hızı tavanı: film greni CRF ile dosyayı şişirir (4K'da ~130 Mbit/s). YouTube'un SDR 30 fps
+// yükleme önerisi 1080p için ~8, 4K için 35–45 Mbit/s; tavan bunun biraz üstünde tutulur.
+const MAXRATE = W * H > 1920 * 1080 * 2 ? 45 : 12; // Mbit/s
+
 function encoder(outFile) {
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
-    '-c:v', 'libx264', '-preset', args.preset || 'medium', '-crf', String(args.crf || 16), '-pix_fmt', 'yuv420p', '-r', String(FPS), outFile],
+    '-c:v', 'libx264', '-preset', args.preset || 'medium', '-crf', String(args.crf || 16),
+    '-maxrate', `${MAXRATE}M`, '-bufsize', `${MAXRATE * 2}M`, '-pix_fmt', 'yuv420p', '-r', String(FPS), outFile],
   { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => ff.on('close', (c) => (c === 0 ? res() : rej(new Error('ffmpeg çıkış kodu ' + c)))));
   return { ff, done };
