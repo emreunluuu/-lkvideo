@@ -1,0 +1,14 @@
+# Haftalık özet — 23 Kasım 2026
+- Uzun 1: Truva yakınında "Aias'ın mezarı" höyüğü — "Homeros'un en güçlü kahramanı Çanakkale'de mi yatıyor?" (rivayete göre)
+- Uzun 2: Voyager 1 bir ışık-günü uzakta — "Bu mesaj Dünya'ya tam 24 saatte ulaşıyor."
+- Uzun 3: Mevlana'nın 753. vuslatı, Şeb-i Arus (17 Ara) — "753 yıldır bir ölüm yıl dönümü düğün gecesi gibi anılıyor."
+- Short 1: 6. cüce gezegen adayı 2026 ED138 — "Güneş Sistemi'nde dev bir dünya gözümüzden kaçmış."
+- Short 2: Titicaca dibindeki merdiven benzeri taşlar — "Dünyanın en yüksek gölünün dibinde merdiven mi var?"
+- Short 3: Geminid meteor yağmuru (13–14 Ara) — "Bu yıldız kaymaları bir kuyruklu yıldızdan değil, bir asteroitten geliyor."
+- Short 4: Hera, DART'ın çarptığı asteroitte — "İnsanlık bir asteroide çarptı; şimdi olay yerine dedektif geldi."
+- Short 5: Seyitömer'de 5000 yıllık 8 somun ekmek — "Bu ekmekler 5000 yıl önce fırından çıktı, hâlâ duruyor."
+- Short 6: Karkamış yazıtı kralını buldu: II. Astiru — "Dokuz parçası kayıp bir yazıt, 2700 yıl sonra kralını buldu."
+- Short 7: El Mirador'da "Mavi Prenses" heykelleri — "Ormanın altındaki şehirden mavi boyalı bir yüz çıktı."
+- Aksiyon 1: Her Short'u "Related Video" ile ilgili uzun videoya bağla, son 5 sn'de sözlü/görsel çağrı yap.
+- Aksiyon 2: Short'ları 61–65 sn yap (TikTok ödül programı 1 dk'dan uzun video istiyor); uzunlar Salı/Perşembe/Cumartesi 20:00.
+- Risk: YouTube Ocak 2026'da 16 büyük AI kanalını kapattı, Temmuz'da şablonlu AI içeriği gelirden çıkardı — her videoda yeni sahne/palet/makam şart.
