@@ -111,3 +111,9 @@ videoya az farklılık gösteren içerikleri para kazanmaya kapatır. Bu yüzden
 
 - Gizli anahtarlar sadece ortam değişkenlerinde veya GitHub Secrets'ta tutulur.
 - Üretilen video dosyaları (`output/`) depoya commit edilmez.
+
+## 12. Hafıza
+
+- Geçmiş kararlar, Dosya serisi şablonu ve iş durumu: `kanal-hafizasi` skill'i
+  (`.claude/skills/kanal-hafizasi/SKILL.md`). Eski sohbetleri yeniden okumak yerine onu kullan;
+  yeni karar alınınca güncelle.
