@@ -1,0 +1,136 @@
+{
+  "id": "13-ugursuz-mu",
+  "title": "13 Sayısı Gerçekten Uğursuz mu?",
+  "format": "vertical",
+  "seed": 1313,
+  "accent": "#E0303A",
+  "grade": {
+    "tint": "#d6ffec",
+    "lift": "#020b08",
+    "grain": 0.045,
+    "vignette": 0.62,
+    "bloom": 1.15
+  },
+  "music": {
+    "scale": "kurdi",
+    "root": 130.81,
+    "tempo": 68,
+    "mood": "gerilim"
+  },
+  "voice": {
+    "name": "tr-TR-Wavenet-E",
+    "rate": 0.95,
+    "pitch": -2.0
+  },
+  "thumbText": [
+    "13 sayısı",
+    "UĞURSUZ MU?"
+  ],
+  "scenes": [
+    {
+      "kind": "on_uc",
+      "cam": "push",
+      "title": [
+        "13",
+        "Uğursuz mu?"
+      ],
+      "sfx": [
+        "impact"
+      ],
+      "narration": "Bazı binalarda on üçüncü kat yok, bazı otellerde on üç numaralı oda. Bu sayı gerçekten uğursuz mu?"
+    },
+    {
+      "kind": "kule13",
+      "cam": "crane",
+      "label": "Kayıp kat",
+      "chip": {
+        "big": "12 → 14",
+        "small": "asansör düğmesi"
+      },
+      "chipAt": 1.8,
+      "narration": "Pek çok gökdelende asansör on ikiden on dörde atlar. Kat aslında orada, sadece adı değiştirilmiş."
+    },
+    {
+      "kind": "on_uc",
+      "cam": "table",
+      "label": "Rivayet • Loki",
+      "chip": {
+        "big": "13.",
+        "small": "davetsiz misafir"
+      },
+      "chipAt": 1.6,
+      "narration": "Korkunun kökeni kesin değil. Rivayete göre İskandinav mitolojisinde sofraya gelen on üçüncü misafir Loki'ydi ve felaket getirdi."
+    },
+    {
+      "kind": "kule13",
+      "cam": "fall",
+      "label": "13 Ekim 1307 • Cuma",
+      "chip": {
+        "big": "1307",
+        "small": "Tapınak Şövalyeleri"
+      },
+      "chipAt": 1.4,
+      "narration": "On üç Ekim bin üç yüz yedi, cuma. Fransa'da Tapınak Şövalyeleri tutuklandı. Bazıları cuma on üç korkusunu buna bağlar, ama bu sadece bir teori."
+    },
+    {
+      "kind": "apollo13",
+      "cam": "drift",
+      "label": "Apollo 13 • Nisan 1970",
+      "chip": {
+        "big": "13 Nisan",
+        "small": "oksijen tankı patladı"
+      },
+      "chipAt": 1.8,
+      "narration": "Apollo on üç Ay'a giderken, on üç Nisan bin dokuz yüz yetmişte bir oksijen tankı patladı. Ama üç astronot da Dünya'ya sağ salim döndü."
+    },
+    {
+      "kind": "on_uc",
+      "cam": "push",
+      "label": "Bilim ne diyor?",
+      "chip": {
+        "big": "2008",
+        "small": "Hollanda araştırması"
+      },
+      "chipAt": 2.0,
+      "narration": "Bilim ne diyor? Hollanda'daki bir araştırmaya göre cuma on üçlerde kaza daha az. Belki o gün herkes daha dikkatli."
+    },
+    {
+      "kind": "kule13",
+      "cam": "crane",
+      "title": [
+        "Uğur da",
+        "uğursuzluk da bizde"
+      ],
+      "titleOut": 99,
+      "sfx": [
+        "impact"
+      ],
+      "narration": "İtalya'da on yedi, Japonya ve Çin'de dört uğursuz sayılır. Yani uğursuzluk sayıda değil, inançta. Sence on üç uğursuz mu? Yorumlara yaz."
+    }
+  ],
+  "meta": {
+    "youtube_title": "13 Sayısı Neden Uğursuz Sayılır? 🔢 #shorts",
+    "description": "Binalarda 13. kat neden yok? Loki efsanesi, 1307 Tapınak Şövalyeleri, Apollo 13 ve bilimin cevabı 60 saniyede.\n\nSence 13 uğursuz mu? Yorumlara yaz!\n\nBu video 3D animasyon ve yapay zekâ seslendirmesiyle üretilmiştir.",
+    "tags": [
+      "13 sayısı",
+      "uğursuz sayı",
+      "cuma 13",
+      "triskaidekafobi",
+      "apollo 13",
+      "tapınak şövalyeleri",
+      "batıl inanç",
+      "bilgi"
+    ],
+    "hashtags": [
+      "#13",
+      "#batılinanç",
+      "#bilgi",
+      "#shorts"
+    ]
+  },
+  "sources": [
+    "https://www.britannica.com/story/why-is-friday-the-13th-considered-unlucky",
+    "https://www.nasa.gov/missions/apollo/apollo-13-mission-details/",
+    "https://www.britannica.com/topic/Templars"
+  ]
+}

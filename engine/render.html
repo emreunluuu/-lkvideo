@@ -369,6 +369,55 @@ const SCENES = {
     cams:{
       orbit(u){const k=easeInOut(u);const a=lerp(.55,-.35,k),r=lerp(70,48,k);return{eye:[Math.sin(a)*r,lerp(4,8,k),Math.cos(a)*r],target:[2,lerp(14,12,k),0],fov:58}}
     }
+  },
+  on_uc:{ // boşlukta süzülen neon "13" + 12+1 mum halkası
+    env:{zenith:'#020a08',horizon:'#0b2a22',ground:'#010302',sunDir:[.2,.5,-1],sunCol:[.3,.9,.7],sunInt:.4,sunSize:.002,stars:1,
+         skyAmb:[.02,.06,.05],gndAmb:[.01,.02,.02],fog:'#06201a',fogD:.012,win:[0,0,0],winI:0,winD:0,water:'#000403',wave:.35,rim:[.1,.5,.4],exposure:1.4},
+    build(rnd){const g=new Geo(),pts=[];g.plane(0,900,[0,0,0],2);
+      const neon=scl(C('#E0303A'),4),b=7;
+      g.box(-5,b,0,1.3,12,1.3,neon,3);g.box(-6.2,b+10.7,0,2.4,1.3,1.3,neon,3);
+      g.box(5,b,0,1.3,12,1.3,neon,3);for(const y of[0,5.35,10.7])g.box(2.3,b+y,0,5.4,1.3,1.3,neon,3);
+      const wax=C('#e8e0cc'),fl=scl(C('#ffcf7a'),3),red=scl(C('#ff2a2a'),4);
+      for(let i=0;i<13;i++){const a=i/13*Math.PI*2,x=Math.sin(a)*20,z=Math.cos(a)*20,last=i===12;
+        g.cyl(x,0,z,.5,.5,2.4+rnd(),12,wax,0);pts.push(x,3.6,z,1.1,...(last?red:fl),0);pts.push(x,1,z,4,...scl(last?red:fl,.08),0);}
+      for(let i=0;i<700;i++){const a=rnd()*6.283,r=6+rnd()*30;pts.push(Math.cos(a)*r,rnd()*24,Math.sin(a)*r,.15,...scl([.5,1,.8],.5),1.5);}
+      return{g,pts,lights:[{p:[0,13,4],c:scl(C('#E0303A'),2.5)},{p:[0,4,-20],c:scl(C('#ff2a2a'),1.4)}]}},
+    cams:{
+      push(u){const k=easeInOut(u);return{eye:[lerp(-6,3,k),lerp(10,13,k),lerp(70,26,k)],target:[0,13,0],fov:56}},
+      table(u){const a=lerp(-.9,1.1,easeInOut(u));return{eye:[Math.sin(a)*36,lerp(18,9,u),Math.cos(a)*36],target:[0,5,0],fov:60}}
+    }
+  },
+  kule13:{ // 13. katı olmayan gökdelen
+    env:{zenith:'#05090c',horizon:'#1d3a3a',ground:'#030505',sunDir:[.5,.25,-1],sunCol:[.4,.8,.7],sunInt:.6,sunSize:.02,stars:1,
+         skyAmb:[.04,.08,.08],gndAmb:[.02,.03,.03],fog:'#0c2222',fogD:.004,win:[.6,1,.85],winI:1.6,winD:.45,water:'#010303',wave:.6,rim:[.1,.4,.35],exposure:1.3},
+    build(rnd){const g=new Geo(),pts=[];g.plane(0,3000,C('#0a0d0d'),0);
+      const gl=C('#26302f'),fh=3.4;
+      for(let f=0;f<26;f++){if(f===12){g.box(0,f*fh,0,22,fh,22,C('#050606'),0);
+          for(let k=-4;k<=4;k++)pts.push(k*2.4,f*fh+1.7,11.3,.9,...scl(C('#E0303A'),3),0);continue;}
+        g.box(0,f*fh,0,22,fh-.25,22,scl(gl,.9+rnd()*.2),1);}
+      g.box(0,26*fh,0,14,4,14,gl,0);g.cyl(0,26*fh+4,0,.3,.05,14,6,C('#8aa'),0);pts.push(0,26*fh+18.5,0,1,...scl(C('#ff3030'),4),0);
+      cityRing(g,pts,rnd,{r0:40,r1:420,zMax:-30,count:500,hMin:8,hMax:70,col:C('#1e2626'),lights:700,lightCol:C('#9fffe0')});
+      return{g,pts,lights:[{p:[0,12*fh+1.7,16],c:scl(C('#E0303A'),2.2)}]}},
+    cams:{
+      crane(u){const k=easeInOut(u);return{eye:[lerp(18,30,k),lerp(4,44,k),lerp(70,48,k)],target:[0,lerp(20,42,k),0],fov:58}},
+      fall(u){const k=easeInOut(u);return{eye:[-40,lerp(80,40,k),40],target:[0,lerp(60,41,k),0],fov:54}}
+    }
+  },
+  apollo13:{ // uzayda hasarlı kapsül, altında Ay
+    env:{zenith:'#000003',horizon:'#05070c',ground:'#000000',sunDir:[1,.3,.4],sunCol:[1,.96,.9],sunInt:2.2,sunSize:.01,stars:1,
+         skyAmb:[.01,.01,.015],gndAmb:[.005,.005,.005],fog:'#000000',fogD:.0002,win:[0,0,0],winI:0,winD:0,water:'#000000',wave:0,rim:[.3,.35,.5],exposure:1.2},
+    build(rnd){const g=new Geo(),pts=[];
+      g.dome(0,-420,-260,400,1,64,24,C('#8a8780'),0);
+      for(let i=0;i<40;i++){const a=rnd()*6.283,r=rnd()*300;g.dome(Math.cos(a)*r,-25-rnd()*6,-260+Math.sin(a)*r*.6,4+rnd()*12,.25,16,4,C('#6e6b65'),0);}
+      const wh=C('#d9d9d4'),met=C('#9a9890');
+      g.cyl(0,0,0,2.1,2.1,7,24,wh,0);g.cyl(0,-.6,0,1.2,1.6,.6,16,met,0);
+      g.cyl(0,7,0,2.1,.5,3.8,24,met,0);g.cyl(0,10.8,0,.5,.3,.8,10,met,0);
+      g.box(2.05,2,0,.25,2.4,1.6,C('#2a2a2a'),0);
+      for(let i=0;i<260;i++){const v=[.5+rnd(),(rnd()-.4)*1.5,(rnd()-.5)*1.5],d=rnd()*14;pts.push(2.2+v[0]*d,3+v[1]*d,v[2]*d,.12+rnd()*.25,...scl([1,.95,.9],.8),2);}
+      return{g,pts,lights:[{p:[6,4,4],c:scl(C('#fff2d8'),1.2)}]}},
+    cams:{
+      drift(u){const k=easeInOut(u);const a=lerp(.4,-.3,k);return{eye:[Math.sin(a)*22,lerp(9,4,k),Math.cos(a)*22],target:[1,4,0],fov:52}}
+    }
   }
 };
 
