@@ -21,11 +21,11 @@
   "voice": {
     "provider": "files",
     "rate": 1.1,
-    "tempo": 1.15
+    "tempo": 1.12
   },
   "timing": {
     "lead": 0.15,
-    "tail": 0.3,
+    "tail": 0.25,
     "firstLead": 0.05
   },
   "thumbText": [
