@@ -16,14 +16,14 @@ ROOT = Path(__file__).resolve().parent.parent
 LEAD, TAIL, FIRST_LEAD = 0.30, 0.45, 0.20
 
 
-def voice_file(script_dir, i, out_wav):
+def voice_file(script_dir, i, out_wav, tempo=1.0):
     """videos/<id>/voice/<n>.mp3|wav|m4a varsa: baş/son sessizliği kırpıp 48 kHz mono WAV'a çevirir, süreyi döndürür."""
     for ext in ("mp3", "wav", "m4a"):
         src = script_dir / "voice" / f"{i + 1}.{ext}"
         if src.exists():
             trim = "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.05"
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-af",
-                            f"{trim},areverse,{trim},areverse", "-ac", "1", "-ar", "48000", str(out_wav)], check=True)
+                            f"{trim},areverse,{trim},areverse" + (f",atempo={tempo}" if tempo != 1.0 else ""), "-ac", "1", "-ar", "48000", str(out_wav)], check=True)
             import wave
             with wave.open(str(out_wav)) as w:
                 return w.getnframes() / w.getframerate()
@@ -117,7 +117,7 @@ def main():
         lead = lead_0 if i == 0 else lead_n
         wav = out / "voice" / f"{i:02}.wav"
         if files_mode:
-            vd = voice_file(script_dir, i, wav)
+            vd = voice_file(script_dir, i, wav, S["voice"].get("tempo", 1.0))
             if vd is None:
                 print(f"  UYARI: voice/{i + 1}.mp3 yok, süre tahmin ediliyor")
         else:

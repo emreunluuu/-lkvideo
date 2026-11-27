@@ -20,7 +20,8 @@
   },
   "voice": {
     "provider": "files",
-    "rate": 1.1
+    "rate": 1.1,
+    "tempo": 1.15
   },
   "timing": {
     "lead": 0.15,
