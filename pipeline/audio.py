@@ -132,7 +132,7 @@ def drums(T, tempo, start, rnd):
     dum = np.sin(2 * np.pi * (48 + 30 * np.exp(-td * 25)) * td) * env_ad(n_d, .002, .16)
     dum += filt(rnd.standard_normal(n_d), "low", 250) * env_ad(n_d, .001, .03) * .4
     n_t = int(.12 * SR)
-    tek = filt(rnd.standard_normal(n_t), "band", [1800, 5200]) * env_ad(n_t, .0005, .025)
+    tek = filt(rnd.standard_normal(n_t), "bandpass", [1800, 5200]) * env_ad(n_t, .0005, .025)
     t, bar = start, 0
     while t < T - 1.5:
         for b, kind, g in [(0, dum, 1), (1, tek, .55), (2.5, dum, .8), (3, tek, .5), (3.5, tek, .3)]:
@@ -146,7 +146,7 @@ def ambience(T, scenes, rnd):
     n = int(T * SR); t = np.arange(n) / SR
     buf = np.zeros((n, 2))
     for c in range(2):
-        wind = filt(rnd.standard_normal(n), "band", [250, 1400])
+        wind = filt(rnd.standard_normal(n), "bandpass", [250, 1400])
         wind *= .5 + .5 * np.sin(2 * np.pi * (.05 + .03 * c) * t + c)
         buf[:, c] += wind * .25
     for sc in scenes:
@@ -155,7 +155,7 @@ def ambience(T, scenes, rnd):
         fade = np.clip(np.minimum(np.arange(m) / SR, (m - np.arange(m)) / SR) / .5, 0, 1)
         if sc["kind"] in ("city_night", "maiden", "galata"):
             for c in range(2):
-                water = filt(rnd.standard_normal(m), "band", [140, 700])
+                water = filt(rnd.standard_normal(m), "bandpass", [140, 700])
                 water *= .55 + .45 * np.sin(2 * np.pi * .28 * np.arange(m) / SR + c * 1.7)
                 buf[i0:i1, c] += water * fade * .22
         if sc["kind"] == "cistern":  # yankılı su damlaları
@@ -177,7 +177,7 @@ def whoosh(dur=.75, up=True, seed=0):
     # zamanla değişen durum-değişkenli filtre (blok bazlı)
     blk = 256; zi = None
     for i in range(0, n, blk):
-        s = sos("band", [fc[i] * .6, min(fc[i] * 1.6, SR / 2 - 100)])
+        s = sos("bandpass", [fc[i] * .6, min(fc[i] * 1.6, SR / 2 - 100)])
         if zi is None or zi.shape != (s.shape[0], 2):
             zi = np.zeros((s.shape[0], 2))
         y[i:i + blk], zi = signal.sosfilt(s, x[i:i + blk], zi=zi)
@@ -209,6 +209,42 @@ def shimmer(root, makam, seed=0):
 
 
 # ---------------- miks ----------------
+def tick(seed=0):
+    """Keskin sinyal tıkı + sub-bass darbesi."""
+    r = np.random.default_rng(seed); n = int(.9 * SR); t = np.arange(n) / SR
+    click = np.zeros(n); k = int(.004 * SR); click[:k] = filt(r.standard_normal(k), "high", 2500) * np.linspace(1, 0, k)
+    sub = np.sin(2 * np.pi * (48 + 30 * np.exp(-t * 18)) * t) * np.exp(-t * 4.5) * .9
+    x = click * 1.4 + sub
+    return np.stack([x, x], 1)
+
+
+def stamp_sfx(seed=0):
+    """Damga: kuru, kısa gümleme."""
+    r = np.random.default_rng(seed); n = int(.35 * SR); t = np.arange(n) / SR
+    body = np.sin(2 * np.pi * (95 + 60 * np.exp(-t * 40)) * t) * np.exp(-t * 22)
+    slap = filt(r.standard_normal(n), "low", 1800) * np.exp(-t * 60) * .8
+    x = body + slap
+    return np.stack([x, x * .95], 1)
+
+
+def paper(seed=0):
+    """Kâğıt/dosya kayma hışırtısı."""
+    r = np.random.default_rng(seed); n = int(.5 * SR); t = np.arange(n) / SR
+    x = filt(r.standard_normal(n), "bandpass", [900, 5000]) * np.sin(np.pi * t / t[-1]) ** 2 * .5
+    x *= 1 + .5 * np.sin(2 * np.pi * 23 * t)
+    return np.stack([x * .9, x], 1)
+
+
+def drone(T, root, rnd):
+    """Alçak uzay drone'u: sub + yavaş dalgalanan beşli + filtreli gürültü."""
+    n = int(T * SR); t = np.arange(n) / SR
+    x = np.sin(2 * np.pi * root * t) * .6 + np.sin(2 * np.pi * root * 1.5 * t + 1) * .25 * (1 + .5 * np.sin(t * .21))
+    x += np.sin(2 * np.pi * root * 2.003 * t) * .15 * (1 + np.sin(t * .13))
+    air = filt(rnd.standard_normal(n), "bandpass", [180, 900]) * .25 * (1 + .5 * np.sin(t * .09))
+    L = x + air; R = x + np.roll(air, 977)
+    return np.stack([L, R], 1)
+
+
 def _load_voice(path):
     sr, v = wavfile.read(path)
     v = v.astype(np.float32) / (32768 if v.dtype == np.int16 else 1)
@@ -226,9 +262,12 @@ def build_mix(S, scenes, total, voice_clips, out_wav):
     T = total + .5; n = int(T * SR)
     print(f"Ses tasarımı: {makam} makamı, {tempo} BPM")
 
-    music = pad(T, root, makam, scenes, rnd) * db(-24)
-    music += melody(T, root, makam, tempo, scenes, rnd) * db(-12)
-    music += drums(T, tempo, scenes[1]["start"] if len(scenes) > 1 else 2, rnd) * db(-21)
+    if mu.get("mood") == "drone":
+        music = drone(T, root, rnd) * db(-16) + pad(T, root * 2, makam, scenes, rnd) * db(-30)
+    else:
+        music = pad(T, root, makam, scenes, rnd) * db(-24)
+        music += melody(T, root, makam, tempo, scenes, rnd) * db(-12)
+        music += drums(T, tempo, scenes[1]["start"] if len(scenes) > 1 else 2, rnd) * db(-21)
     music[: len(music)] += reverb(music, 2.8, 3500, 1)[:n] * .35
     amb = ambience(T, scenes, rnd)
     amb += reverb(amb, 3.5, 3000, 2)[:n] * .5
@@ -246,6 +285,11 @@ def build_mix(S, scenes, total, voice_clips, out_wav):
             place(sfx, shimmer(root, makam, k), sc["start"] + sc.get("chipAt", 1.2), db(-15), pan=-.3)
         if sc.get("label"):
             place(sfx, whoosh(.4, seed=k + 50) * .5, sc["start"] + (2.2 if sc.get("title") else .25), db(-20), pan=-.6)
+        for j, h in enumerate(sc.get("hits", [])):
+            fx = {"tick": (tick, -6), "stamp": (stamp_sfx, -7), "paper": (paper, -14), "impact": (impact, -6),
+                  "whoosh": (lambda s_: whoosh(.6, seed=s_), -12)}.get(h.get("sfx"))
+            if fx:
+                place(sfx, fx[0](k * 10 + j), sc["start"] + h.get("t", 0), db(fx[1]))
     last = scenes[-1]["start"]
     place(sfx, riser(1.6, 3), last - 1.6, db(-14))
     sfx += reverb(sfx, 2.0, 5000, 3)[:n] * .3

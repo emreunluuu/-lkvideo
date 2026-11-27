@@ -16,6 +16,39 @@ ROOT = Path(__file__).resolve().parent.parent
 LEAD, TAIL, FIRST_LEAD = 0.30, 0.45, 0.20
 
 
+def voice_file(script_dir, i, out_wav):
+    """videos/<id>/voice/<n>.mp3|wav|m4a varsa: baş/son sessizliği kırpıp 48 kHz mono WAV'a çevirir, süreyi döndürür."""
+    for ext in ("mp3", "wav", "m4a"):
+        src = script_dir / "voice" / f"{i + 1}.{ext}"
+        if src.exists():
+            trim = "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.05"
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src), "-af",
+                            f"{trim},areverse,{trim},areverse", "-ac", "1", "-ar", "48000", str(out_wav)], check=True)
+            import wave
+            with wave.open(str(out_wav)) as w:
+                return w.getnframes() / w.getframerate()
+    return None
+
+
+def resolve_u(obj, dur):
+    """Sahne süresine göre oransal zamanları (tu, u, ...AtU, dropsU) saniyeye çevirir."""
+    if isinstance(obj, list):
+        return [resolve_u(x, dur) for x in obj]
+    if not isinstance(obj, dict):
+        return obj
+    out = {}
+    for k, v in obj.items():
+        if k in ("tu", "u") and isinstance(v, (int, float)):
+            out["t"] = round(v * dur, 3)
+        elif k in ("stampAtU", "closeAtU") and isinstance(v, (int, float)):
+            out[k[:-1]] = round(v * dur, 3)
+        elif k == "dropsU":
+            out["drops"] = resolve_u(v, dur)
+        else:
+            out[k] = resolve_u(v, dur)
+    return out
+
+
 def word_times(text, t0, dur):
     """Kelime zamanlarını karakter uzunluğuna göre dağıtır."""
     words = text.split()
@@ -72,21 +105,31 @@ def main():
     (out / "voice").mkdir(parents=True, exist_ok=True)
 
     # 1) Seslendirme ve zaman çizelgesi
-    use_tts = tts.available() and not a.stills
-    print("Seslendirme:", "Google TTS (" + S["voice"]["name"] + ")" if use_tts else "YOK (tahmini süre, sessiz anlatım)")
+    script_dir = Path(a.script).resolve().parent
+    files_mode = S["voice"].get("provider") == "files"
+    use_tts = (not files_mode) and tts.available() and not a.stills
+    tm = S.get("timing", {})
+    lead_n, tail_n, lead_0 = tm.get("lead", LEAD), tm.get("tail", TAIL), tm.get("firstLead", FIRST_LEAD)
+    print("Seslendirme:", "hazır ses dosyaları (voice/)" if files_mode else
+          ("Google TTS (" + S["voice"]["name"] + ")" if use_tts else "YOK (tahmini süre, sessiz anlatım)"))
     t, scenes, words, voice_clips = 0.0, [], [], []
     for i, sc in enumerate(S["scenes"]):
-        lead = FIRST_LEAD if i == 0 else LEAD
+        lead = lead_0 if i == 0 else lead_n
         wav = out / "voice" / f"{i:02}.wav"
-        vd = tts.synthesize(sc["narration"], wav, S["voice"]) if use_tts else None
+        if files_mode:
+            vd = voice_file(script_dir, i, wav)
+            if vd is None:
+                print(f"  UYARI: voice/{i + 1}.mp3 yok, süre tahmin ediliyor")
+        else:
+            vd = tts.synthesize(sc["narration"], wav, S["voice"]) if use_tts else None
         if vd is None:
             vd = tts.estimate_duration(sc["narration"], S["voice"].get("rate", .95))
         else:
             voice_clips.append((t + lead, str(wav)))
-        dur = round(lead + vd + TAIL, 3)
+        dur = round(lead + vd + tail_n, 3)
         ws = word_times(sc["narration"], t + lead, vd)
         words += ws
-        scenes.append({**{k: v for k, v in sc.items() if k != "narration"}, "start": round(t, 3), "dur": dur})
+        scenes.append({**resolve_u({k: v for k, v in sc.items() if k != "narration"}, dur), "start": round(t, 3), "dur": dur})
         t += dur
     total = round(t, 3)
     chs = chunks(words)
@@ -94,7 +137,7 @@ def main():
 
     data = {"width": W, "height": H, "fps": 30, "scale3d": 0.75 if not a.draft else 1.0, "seed": S.get("seed", 1),
             "accent": S.get("accent"), "grade": S.get("grade", {}), "title": S["title"], "thumbText": S.get("thumbText"),
-            "scenes": scenes, "chunks": chs, "total": total}
+            "scenes": scenes, "chunks": chs, "total": total, "style": S.get("style")}
     (out / "timeline.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # 2) Kontrol kareleri + kapak
@@ -123,7 +166,7 @@ def main():
     # 6) Altyazı + yayın bilgileri
     (out / f"{S['id']}.srt").write_text(srt(chs), encoding="utf-8")
     meta = dict(S.get("meta", {}))
-    meta.update({"format": fmt, "duration_sec": total, "voice": "google-tts" if voice_clips else "yok",
+    meta.update({"format": fmt, "duration_sec": total, "voice": ("elevenlabs (dosya)" if files_mode else "google-tts") if voice_clips else "yok",
                  "approved": False, "sources": S.get("sources", []),
                  "synthetic_content_disclosure": True})
     (out / "yayin.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")

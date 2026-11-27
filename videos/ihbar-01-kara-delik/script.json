@@ -1,0 +1,426 @@
+{
+  "id": "ihbar-01-kara-delik",
+  "title": "Var Olmaması Gereken Kara Delik",
+  "format": "vertical",
+  "style": "dosya",
+  "seed": 231123,
+  "accent": "#D4B483",
+  "grade": {
+    "tint": "#f4ecdf",
+    "lift": "#05060c",
+    "grain": 0.05,
+    "vignette": 0.6,
+    "bloom": 1.25
+  },
+  "music": {
+    "scale": "kurdi",
+    "root": 55.0,
+    "tempo": 60,
+    "mood": "drone"
+  },
+  "voice": {
+    "provider": "files",
+    "rate": 1.1
+  },
+  "timing": {
+    "lead": 0.15,
+    "tail": 0.3,
+    "firstLead": 0.05
+  },
+  "thumbText": [
+    "Var olmaması gereken",
+    "KARA DELİK"
+  ],
+  "scenes": [
+    {
+      "kind": "bh_void",
+      "cam": "push",
+      "red": "olmamalıydı",
+      "ov": [
+        {
+          "type": "tag",
+          "text": "İHBAR #01 · KARA DELİK",
+          "t": 0
+        },
+        {
+          "type": "date",
+          "big": "23.11.2023",
+          "small": "13:54 UTC · LIGO, ABD",
+          "t": 0.05
+        },
+        {
+          "type": "rich",
+          "parts": [
+            [
+              "Var olma",
+              0
+            ],
+            [
+              "MAMASI",
+              1
+            ],
+            [
+              " gereken",
+              0
+            ]
+          ],
+          "y": 0.56,
+          "t": 0.5,
+          "size": 0.075
+        },
+        {
+          "type": "rich",
+          "parts": [
+            [
+              "kara delikler",
+              0
+            ]
+          ],
+          "y": 0.61,
+          "t": 0.6,
+          "size": 0.075
+        }
+      ],
+      "hits": [
+        {
+          "t": 0.05,
+          "sfx": "tick"
+        }
+      ],
+      "narration": "Bu iki kara delik, bilinen yıldız fiziğine göre var olmamalıydı."
+    },
+    {
+      "kind": "bh_void",
+      "cam": "drift",
+      "subY": 0.765,
+      "ov": [
+        {
+          "type": "dossier",
+          "t": 0,
+          "y": 0.15,
+          "h": 0.55,
+          "lines": [
+            {
+              "text": "KONU: KARA DELİKLER",
+              "t": 0.5,
+              "y": 0.14
+            },
+            {
+              "text": "Gönderen: @oziboaydino",
+              "t": 0.9,
+              "y": 0.24
+            }
+          ],
+          "stamp": "İHBAR",
+          "stampAt": 0.45,
+          "sx": 0.7,
+          "sy": 0.38,
+          "comment": {
+            "t": 1.3,
+            "y": 0.62,
+            "user": "@oziboaydino",
+            "when": "19 saat önce",
+            "text": "karadeliklerle ilgili video gelsinn",
+            "avatar": "O"
+          }
+        }
+      ],
+      "hits": [
+        {
+          "t": 0.0,
+          "sfx": "paper"
+        },
+        {
+          "t": 0.5,
+          "sfx": "stamp",
+          "shake": 0.5
+        },
+        {
+          "t": 1.6,
+          "sfx": "stamp",
+          "shake": 0.25
+        }
+      ],
+      "narration": "Bu dosya bir ihbarla geldi. Gönderen: oziboaydino."
+    },
+    {
+      "kind": "ligo",
+      "cam": "crane",
+      "sigAt": 3.4,
+      "red": "onda",
+      "ov": [
+        {
+          "type": "stack",
+          "y": 0.15,
+          "items": [
+            {
+              "text": "LIGO HANFORD · WASHINGTON",
+              "t": 0.3
+            },
+            {
+              "text": "LIGO LIVINGSTON · LOUISIANA",
+              "t": 0.9
+            }
+          ]
+        },
+        {
+          "type": "big",
+          "text": "SÜRE: 0,1 SANİYE",
+          "red": "0,1",
+          "t": 4.3,
+          "y": 0.33
+        }
+      ],
+      "hits": [
+        {
+          "t": 3.4,
+          "sfx": "tick",
+          "shake": 0.35,
+          "flash": 0.25
+        }
+      ],
+      "narration": "Yirmi üç Kasım iki bin yirmi üç. ABD'deki iki dev dedektör aynı anda bir titreşim yakaladı. Sadece saniyenin onda biri sürdü."
+    },
+    {
+      "kind": "bbh",
+      "cam": "orbit",
+      "mergeU": 0.62,
+      "ov": [
+        {
+          "type": "big",
+          "text": "~140 GÜNEŞ KÜTLESİ",
+          "t": 1.6,
+          "y": 0.15,
+          "size": 0.062
+        },
+        {
+          "type": "big",
+          "text": "+ ~100 GÜNEŞ KÜTLESİ",
+          "t": 2.6,
+          "y": 0.2,
+          "size": 0.062
+        },
+        {
+          "type": "big",
+          "text": "→ 225",
+          "red": "225",
+          "font": "serif",
+          "tu": 0.64,
+          "y": 0.29,
+          "size": 0.15
+        },
+        {
+          "type": "stack",
+          "y": 0.34,
+          "size": 0.026,
+          "items": [
+            {
+              "text": "FARK: DALGA OLARAK YAYILAN ENERJİ",
+              "tu": 0.7
+            }
+          ]
+        }
+      ],
+      "hits": [
+        {
+          "u": 0.62,
+          "sfx": "impact",
+          "shake": 0.8,
+          "flash": 1.0
+        }
+      ],
+      "narration": "Kaynağı: milyarlarca ışık yılı ötede çarpışan iki kara delik. Biri Güneş'in yüz kırk, diğeri yüz katı."
+    },
+    {
+      "kind": "star_death",
+      "cam": "hold",
+      "boomU": 0.55,
+      "red": "yasak",
+      "ov": [
+        {
+          "type": "ruler",
+          "t": 0.2,
+          "y": 0.2,
+          "zoneAt": 1.4,
+          "stampAtU": 0.82,
+          "dropsU": [
+            {
+              "v": 103,
+              "lo": 51,
+              "hi": 123,
+              "tu": 0.78
+            },
+            {
+              "v": 137,
+              "lo": 120,
+              "hi": 159,
+              "tu": 0.8
+            }
+          ]
+        }
+      ],
+      "hits": [
+        {
+          "u": 0.55,
+          "sfx": "impact",
+          "shake": 0.6,
+          "flash": 0.7
+        },
+        {
+          "u": 0.82,
+          "sfx": "stamp",
+          "shake": 0.4
+        }
+      ],
+      "narration": "Sorun şu: Modellere göre Güneş'in altmış ile yüz otuz katı arası kara delikler yıldızdan doğmamalı. Böyle yıldızlar patlayıp yok olur. Bu ikisi ise büyük olasılıkla tam o yasak bölgede."
+    },
+    {
+      "kind": "bh_spin",
+      "cam": "tilt",
+      "red": "Einstein",
+      "ov": [
+        {
+          "type": "stack",
+          "y": 0.13,
+          "size": 0.034,
+          "items": [
+            {
+              "text": "DÖNÜŞ HIZI: DÜNYA'NIN",
+              "t": 0.8
+            }
+          ]
+        },
+        {
+          "type": "big",
+          "text": "~400.000 KATI",
+          "red": "400.000",
+          "t": 1.4,
+          "y": 0.24,
+          "size": 0.11
+        },
+        {
+          "type": "stack",
+          "y": 0.29,
+          "size": 0.024,
+          "items": [
+            {
+              "text": "KAYNAK: BIRMINGHAM ÜNİVERSİTESİ",
+              "t": 1.9
+            }
+          ]
+        }
+      ],
+      "narration": "Üstelik ikisi de Einstein'ın izin verdiği sınıra yakın bir hızla dönüyordu. Dünya'nın dönüşünden yaklaşık dört yüz bin kat hızlı."
+    },
+    {
+      "kind": "bh_void",
+      "cam": "close",
+      "ov": [
+        {
+          "type": "polaroid",
+          "t": 0.1,
+          "y": 0.38,
+          "grow": 3.0,
+          "caption": "hiyerarşik birleşme?"
+        }
+      ],
+      "hits": [
+        {
+          "t": 0.1,
+          "sfx": "paper"
+        }
+      ],
+      "narration": "Bir teoriye göre bunlar ilk kuşak değil, önceki birleşmelerin çocukları. Yani kara delikler, kara delik doğurmuş olabilir."
+    },
+    {
+      "kind": "bh_void",
+      "cam": "drift",
+      "ov": [
+        {
+          "type": "dossier",
+          "t": 0,
+          "y": 0.15,
+          "h": 0.52,
+          "label": "MUAMMA · İHBAR #01",
+          "lines": [
+            {
+              "text": "GW231123",
+              "t": 0.3,
+              "y": 0.2,
+              "serif": true,
+              "size": 0.09
+            },
+            {
+              "text": "Sıradaki ihbar senden",
+              "t": 1.2,
+              "y": 0.62,
+              "serif": true,
+              "size": 0.06
+            },
+            {
+              "text": "→ YORUMLARA YAZ",
+              "t": 1.7,
+              "y": 0.72,
+              "red": true
+            }
+          ],
+          "stamp": "ÇÖZÜLMEDİ",
+          "stampAt": 0.8,
+          "sx": 0.5,
+          "sy": 0.4,
+          "ss": 0.08,
+          "closeAtU": 0.8
+        },
+        {
+          "type": "keyhole",
+          "tu": 0.9,
+          "d": 0.9
+        }
+      ],
+      "hits": [
+        {
+          "t": 0.0,
+          "sfx": "paper"
+        },
+        {
+          "t": 0.85,
+          "sfx": "stamp",
+          "shake": 0.5
+        },
+        {
+          "u": 0.8,
+          "sfx": "paper"
+        }
+      ],
+      "narration": "Bu sinyali tam çözmek yıllar alabilir. Dosya hâlâ açık. Sıradaki ihbar sizden, yorumlara yazın."
+    }
+  ],
+  "meta": {
+    "youtube_title": "Var Olmaması Gereken Kara Delikler 🕳️ | İhbar #01",
+    "description": "23 Kasım 2023'te LIGO, standart yıldız modellerinin açıklayamadığı iki kara deliğin çarpışmasını yakaladı: GW231123. Bu dosya bir abonemizin ihbarıyla açıldı. Sıradaki dosyayı sen seç: yorumlara yaz. 📁\n\nKaynaklar: LIGO bilim özeti (ligo.org/science-summaries/GW231123), Caltech basın bülteni (Temmuz 2025), arXiv:2507.08219, Birmingham Üniversitesi.\nGörseller, müzik ve ses efektleri kodla üretildi; seslendirme yapay zekâ sesidir.\n\n#karadelik #uzay #bilim #muamma #çözülmemişdosyalar",
+    "tags": [
+      "kara delik",
+      "GW231123",
+      "LIGO",
+      "kütleçekim dalgaları",
+      "uzay",
+      "bilim",
+      "gizem",
+      "muamma"
+    ],
+    "hashtags": [
+      "#karadelik",
+      "#uzay",
+      "#bilim",
+      "#muamma",
+      "#çözülmemişdosyalar"
+    ],
+    "pinned_comment": "İhbar hattı açık. 📁 Hangi gizemi açalım?"
+  },
+  "sources": [
+    "https://ligo.org/science-summaries/GW231123",
+    "https://www.pma.caltech.edu/news/ligo-detects-most-massive-black-hole-merger-to-date",
+    "https://arxiv.org/abs/2507.08219",
+    "https://www.birmingham.ac.uk/accessibility/transcripts/discover-more-about-gw231123"
+  ]
+}
