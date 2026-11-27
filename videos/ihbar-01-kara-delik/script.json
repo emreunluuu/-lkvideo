@@ -229,7 +229,7 @@
           "flash": 1.0
         }
       ],
-      "narration": "Kaynağı: milyarlarca ışık yılı ötede çarpışan iki kara delik. Biri Güneş'in yüz kırk, diğeri yüz katı."
+      "narration": "Kaynağı: milyarlarca ışık yılı ötede çarpışan iki kara delik. Biri Güneş'in yaklaşık yüz kırk, diğeri yüz katı. Birleşince geriye Güneş'in iki yüz yirmi beş katı bir canavar kaldı. Aradaki kütle, uzay-zamanı titreten dalgalara dönüştü."
     },
     {
       "kind": "star_death",
@@ -272,7 +272,7 @@
           "shake": 0.4
         }
       ],
-      "narration": "Sorun şu: Modellere göre Güneş'in altmış ile yüz otuz katı arası kara delikler yıldızdan doğmamalı. Böyle yıldızlar patlayıp yok olur. Bu ikisi ise büyük olasılıkla tam o yasak bölgede."
+      "narration": "Ama asıl sorun başka. Standart modellere göre, Güneş'in altmış ile yüz otuz katı arasındaki kara delikler ölen yıldızlardan doğmamalı. O kadar büyük yıldızlar patladığında kendini tamamen parçalar. Geride hiçbir şey kalmaz. Bu iki kara delik ise büyük olasılıkla tam o yasak bölgede."
     },
     {
       "kind": "bh_spin",
@@ -330,7 +330,7 @@
           "sfx": "paper"
         }
       ],
-      "narration": "Bir teoriye göre bunlar ilk kuşak değil, önceki birleşmelerin çocukları. Yani kara delikler, kara delik doğurmuş olabilir."
+      "narration": "Öne çıkan teorilerden biri şu: Bunlar ilk kuşak değil. Daha önce birleşmiş kara deliklerin çocukları olabilirler. Yani kara delikler, başka kara delikler doğurmuş olabilir."
     },
     {
       "kind": "bh_void",
@@ -392,7 +392,7 @@
           "sfx": "paper"
         }
       ],
-      "narration": "Bu sinyali tam çözmek yıllar alabilir. Dosya hâlâ açık. Sıradaki ihbar sizden, yorumlara yazın."
+      "narration": "Bilim insanları bu sinyali tam çözmenin yıllar alacağını söylüyor. Dosya hâlâ açık. Sıradaki ihbar sizden. Yorumlara yazın."
     }
   ],
   "meta": {
