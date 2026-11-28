@@ -1,0 +1,33 @@
+{
+  "youtube_title": "Var Olmaması Gereken Kara Delikler 🕳️ | İhbar #01",
+  "description": "23 Kasım 2023'te LIGO, standart yıldız modellerinin açıklayamadığı iki kara deliğin çarpışmasını yakaladı: GW231123. Bu dosya bir abonemizin ihbarıyla açıldı. Sıradaki dosyayı sen seç: yorumlara yaz. 📁\n\nKaynaklar: LIGO bilim özeti (ligo.org/science-summaries/GW231123), Caltech basın bülteni (Temmuz 2025), arXiv:2507.08219, Birmingham Üniversitesi.\nGörseller, müzik ve ses efektleri kodla üretildi; seslendirme yapay zekâ sesidir.\n\n#karadelik #uzay #bilim #muamma #çözülmemişdosyalar",
+  "tags": [
+    "kara delik",
+    "GW231123",
+    "LIGO",
+    "kütleçekim dalgaları",
+    "uzay",
+    "bilim",
+    "gizem",
+    "muamma"
+  ],
+  "hashtags": [
+    "#karadelik",
+    "#uzay",
+    "#bilim",
+    "#muamma",
+    "#çözülmemişdosyalar"
+  ],
+  "pinned_comment": "İhbar hattı açık. 📁 Hangi gizemi açalım?",
+  "format": "vertical",
+  "duration_sec": 65.349,
+  "voice": "elevenlabs (dosya)",
+  "approved": false,
+  "sources": [
+    "https://ligo.org/science-summaries/GW231123",
+    "https://www.pma.caltech.edu/news/ligo-detects-most-massive-black-hole-merger-to-date",
+    "https://arxiv.org/abs/2507.08219",
+    "https://www.birmingham.ac.uk/accessibility/transcripts/discover-more-about-gw231123"
+  ],
+  "synthetic_content_disclosure": true
+}
